@@ -28,6 +28,7 @@ class NewTableCell: UITableViewCell {
     private var newTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 18.0, weight: .bold)
+        label.text = "제목 없음"
         
         return label
     }()
@@ -35,6 +36,7 @@ class NewTableCell: UITableViewCell {
     private var newSubTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16.0, weight: .medium)
+        label.text = "내용 없음"
         
         return label
     }()
@@ -42,6 +44,7 @@ class NewTableCell: UITableViewCell {
     private var newIsbn13Label: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13.0)
+        label.text = "123123123"
         
         return label
     }()
@@ -49,6 +52,7 @@ class NewTableCell: UITableViewCell {
     private var newPriceLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14.0, weight: .bold)
+        label.text = "$100"
         
         return label
     }()
@@ -57,35 +61,44 @@ class NewTableCell: UITableViewCell {
     
     // MARK: - Functions
     func setup() {
-        
+        setupLayout()
     }
     
     func setupLayout() {
-        addSubview(newView)
-        newView.snp.makeConstraints {
-            $0.height.equalTo(130)
+        addsubViews([newView])
+        newView.snp.makeConstraints{
+            $0.edges.equalToSuperview()
         }
         
-        //addsubViews([newPriceLabel, newIsbn13Label])
-        [
-            newPriceLabel,newIsbn13Label
-        ].forEach(<#T##body: (UILabel) throws -> Void##(UILabel) throws -> Void#>)
-//        addSubview(<#T##view: UIView##UIView#>)
+        newView.addsubViews([newImageView, newTitleLabel, newSubTitleLabel, newIsbn13Label, newPriceLabel])
+        newImageView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalToSuperview().inset(5)
+        }
+        newTitleLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(newImageView.snp.bottom).offset(5)
+        }
+        newSubTitleLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalTo(newIsbn13Label.snp.top).offset(5)
+        }
+        newIsbn13Label.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalTo(newPriceLabel.snp.top).offset(5)
+        }
+        newPriceLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(5)
+        }
         
-//        addsubViews([newPriceLabel, newIsbn13Label])
+        
     }
     
     
     
 }
 
-extension UIView {
-//    func addsubViews(_ view: [UIView]) {
-//        view.forEach { addSubview($0) }
-//    }
-    
-    
-}
 
 
 
