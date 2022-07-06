@@ -29,6 +29,7 @@ class SearchViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(SearchTableCell.self, forCellReuseIdentifier: "SearchTableCell")
+//        tableView.backgroundColor = .red
         
         return tableView
     }()
@@ -60,7 +61,8 @@ class SearchViewController: UIViewController {
         view.addsubViews([searchTableView, noLabel])
         
         searchTableView.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview()
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(20)
         }
         noLabel.snp.makeConstraints {
@@ -75,7 +77,7 @@ class SearchViewController: UIViewController {
         self.navigationController?.navigationBar.prefersLargeTitles = true
         searchController.searchBar.placeholder = "검색어를 입력해보세요."
         searchController.searchResultsUpdater = self
-        noLabel.isHidden = true
+//        noLabel.isHidden = true
     }
 }
 
@@ -104,7 +106,8 @@ extension SearchViewController : UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "SearchTableCell", for: indexPath) as? SearchTableCell else { return UITableViewCell()}
         
         if self.isFiltering {
-            if filteredData.count != 0 {
+            if filteredData.count != 0  {
+                cell.setup()
                 cell.configureView(with: filteredData[indexPath.row])
                 self.noLabel.isHidden = true
             }
@@ -117,9 +120,7 @@ extension SearchViewController : UITableViewDataSource {
     }
 }
 
-//extension SearchViewController: UISearchBarDelegate {
-//
-//}
+
 
 extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
@@ -137,7 +138,6 @@ extension SearchViewController: UISearchResultsUpdating {
                 
                 Task {
                     do {
-                        
                         let books = try await NetworkManager.shared.loadSearchBook(query: self.searchBarWord)
                         
                         self.bookList = books

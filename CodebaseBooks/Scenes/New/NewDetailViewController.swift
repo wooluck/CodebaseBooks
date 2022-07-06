@@ -96,7 +96,7 @@ class NewDetailViewController: UIViewController {
         setupLayout()
         navigationSet()
         ApiTake()
-        
+        self.view.backgroundColor = .white
         print("확인해보자 : \(prepareBook)")
     }
     

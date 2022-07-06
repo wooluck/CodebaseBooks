@@ -82,14 +82,10 @@ class NewTableCell: UITableViewCell {
     }
     
     func setupLayout() {
-//        contentView.snp.makeConstraints {
-//            $0.height.width.equalTo(200)
-//        }
         contentView.addsubViews([newImageView , newLinkButton ,newView])
         
         newImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
-
             $0.leading.trailing.equalToSuperview().inset(105)
             $0.height.equalTo(150)
         }

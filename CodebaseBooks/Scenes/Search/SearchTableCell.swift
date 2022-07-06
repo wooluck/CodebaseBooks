@@ -74,12 +74,12 @@ class SearchTableCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         backgroundColor = .systemGray5
+        viewSizeAndLayer()
     }
     
     // MARK: - Functions
     func setup() {
         setupLayout()
-        viewSizeAndLayer()
     }
     
     func setupLayout() {
@@ -87,9 +87,9 @@ class SearchTableCell: UITableViewCell {
         
         searchImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.bottom.equalTo(searchView.snp.top)
+//            $0.bottom.equalTo(searchView.snp.top)
             $0.leading.trailing.equalToSuperview().inset(105)
-            
+            $0.height.equalTo(150)
         }
         searchLinkButton.snp.makeConstraints {
             $0.top.trailing.equalToSuperview().inset(15)
@@ -97,7 +97,7 @@ class SearchTableCell: UITableViewCell {
         }
         
         searchView.snp.makeConstraints{
-            $0.top.equalToSuperview().inset(165)
+            $0.top.equalTo(searchImageView.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
         }
         
