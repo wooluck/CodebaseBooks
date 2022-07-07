@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Alamofire
 
 class SearchViewController: UIViewController {
     
@@ -29,7 +30,6 @@ class SearchViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(SearchTableCell.self, forCellReuseIdentifier: "SearchTableCell")
-//        tableView.backgroundColor = .red
         
         return tableView
     }()
@@ -72,7 +72,6 @@ class SearchViewController: UIViewController {
     
     func navigationSearch() {
         navigationItem.searchController = searchController
-        //        searchController.searchBar.delegate = self
         self.navigationItem.title = "Search Books"
         self.navigationController?.navigationBar.prefersLargeTitles = true
         searchController.searchBar.placeholder = "검색어를 입력해보세요."
@@ -98,7 +97,6 @@ extension SearchViewController: UITableViewDelegate {
 extension SearchViewController : UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.isFiltering ? self.filteredData.count : self.bookList.count
-        //        return self.bookList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -132,26 +130,21 @@ extension SearchViewController: UISearchResultsUpdating {
         
         self.searchTimer?.invalidate()
         
-        searchTimer = Timer.scheduledTimer(withTimeInterval: 0, repeats: false, block: { [weak self] timer in
-            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+        searchTimer = Timer.scheduledTimer(withTimeInterval: 0, repeats: false, block: { [weak self] timer in            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
                 guard let `self` = self else { return }
-                
-                Task {
-                    do {
-                        let books = try await NetworkManager.shared.loadSearchBook(query: self.searchBarWord)
-                        
-                        self.bookList = books
-                        print("bookList = \(self.bookList.count)")
-                        self.filteredData = self.bookList.filter { $0.title.localizedCaseInsensitiveContains(self.searchBarWord)}
-                        print("filterData = \(self.filteredData)")
-                        
-                        DispatchQueue.main.async {
-                            self.searchTableView.reloadData()
+
+                AF.request("https://api.itbook.store/1.0/search/" + self.searchBarWord)
+                        .validate()
+                        .responseDecodable(of: BookModel.self) { data in
+                        guard let books = data.value else {
+                            print("responseDecodable ERROR")
+                            return
                         }
-                    } catch {
-                        print("Response Error: \(error) @@ \(error.localizedDescription)")
+                            self.bookList = books.books
+                            self.filteredData = self.bookList.filter { $0.title.localizedCaseInsensitiveContains(self.searchBarWord)}
+                            print("self.bookList = books.books =\(self.bookList)")
+                            self.searchTableView.reloadData()
                     }
-                }
             }
         })
     }

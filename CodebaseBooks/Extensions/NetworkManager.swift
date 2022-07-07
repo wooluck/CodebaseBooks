@@ -6,17 +6,55 @@
 //
 
 import Foundation
+import Alamofire
 
 enum HttpMethod: String {
     case get
     case delete
 }
 
+
 class NetworkManager {
     static let shared = NetworkManager()
     private init() { }
     
     var book : Book?
+    
+    func fetchNewBooks()  {
+        AF.request("https://api.itbook.store/1.0/new")
+            .validate()
+            .responseDecodable(of: BookModel.self) { data in
+            guard let books = data.value else {
+                print("responseDecodable ERROR")
+                return
+            }
+        }
+    }
+    
+    func fetchDetailBooks(apiURL: String)  {
+        AF.request("https://api.itbook.store/1.0/")
+            .validate()
+            .responseDecodable(of: BookModel.self) { data in
+            guard let books = data.value else {
+                print("responseDecodable ERROR")
+                return
+            }
+        }
+    }
+    
+    func fetchSearchBooks(apiURL: String)  {
+        AF.request("https://api.itbook.store/1.0/")
+            .validate()
+            .responseDecodable(of: BookModel.self) { data in
+            guard let books = data.value else {
+                print("responseDecodable ERROR")
+                return
+            }
+        }
+    }
+    
+    
+    
     
     // New
     func loadBook() async throws -> [Book] {

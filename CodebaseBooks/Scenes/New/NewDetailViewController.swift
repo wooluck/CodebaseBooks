@@ -7,13 +7,14 @@
 
 import Foundation
 import UIKit
+import Alamofire
 
 class NewDetailViewController: UIViewController {
     
     var prepareBook: Book? {
-//        didSet {
-//            print(prepareBook)
-//        }
+        didSet {
+            print(prepareBook)
+        }
     }
     
     var detailBook: BookDetail?
@@ -93,11 +94,12 @@ class NewDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tabBarController?.tabBar.isHidden = true
+        
+        fetchSearchBooks(isbn13: self.prepareBook?.isbn13 ?? "nil")
         setupLayout()
         navigationSet()
-        ApiTake()
+
         self.view.backgroundColor = .white
-        print("확인해보자 : \(prepareBook)")
     }
     
     // MARK: - Functions
@@ -155,26 +157,25 @@ class NewDetailViewController: UIViewController {
         self.navigationController?.navigationBar.prefersLargeTitles = true
     }
     
-    func ApiTake() {
-        Task {
-            do {
-                let books = try await NetworkManager.shared.loadDetailBook(isbn13: prepareBook?.isbn13 ?? "isbn nil")
-                
-                self.detailBook = books
-                
-                DispatchQueue.main.async {
-                    let imageURL = URL(string: self.detailBook?.image ?? "nil")
-                    self.detailImageView.load(url: imageURL!)
-                    self.detailTitleLabel.text = self.detailBook?.title
-                    self.detailSubTitleLabel.text = self.detailBook?.subtitle
-                    self.detailIsbn13Label.text = self.detailBook?.isbn13
-                    self.detailPriceLabel.text = self.detailBook?.price
-                    self.detailLinkButton.setTitle(self.detailBook?.url, for: .normal)
-                }
-            }catch {
-                print("Response Error: \(error) @@ \(error.localizedDescription)")
+    func fetchSearchBooks(isbn13: String) {
+        AF.request("https://api.itbook.store/1.0/books/" + isbn13)
+            .validate()
+            .responseDecodable(of: BookDetail.self) { data in
+            guard let books = data.value else {
+                print("responseDecodable ERROR")
+                return
             }
-        }
+                self.detailBook = books
+                let imageURL = URL(string: self.detailBook?.image ?? "nil")
+                self.detailImageView.load(url: imageURL!)
+                self.detailTitleLabel.text = self.detailBook?.title
+                self.detailSubTitleLabel.text = self.detailBook?.subtitle
+                self.detailIsbn13Label.text = self.detailBook?.isbn13
+                self.detailPriceLabel.text = self.detailBook?.price
+                self.detailLinkButton.setTitle(self.detailBook?.url, for: .normal)
+                
+                
+            }
     }
     
 }

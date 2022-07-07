@@ -81,7 +81,13 @@ class SearchTableCell: UITableViewCell {
     }
     
     func setupLayout() {
-        contentView.addsubViews([searchImageView , searchLinkButton ,searchView])
+        
+        [
+            searchImageView, searchLinkButton, searchView
+        ].map {
+            return contentView.addSubview($0)
+        }
+//        contentView.addsubViews([searchImageView , searchLinkButton ,searchView])
         
         searchImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
@@ -143,7 +149,7 @@ class SearchTableCell: UITableViewCell {
         searchTitleLabel.text = bookModel.title
         searchSubTitleLabel.text = bookModel.subtitle
         searchIsbn13Label.text = bookModel.isbn13
-        searchPriceLabel.text = bookModel.price
+        searchPriceLabel.text = bookModel.price.USDToKRW()
         
         selectionStyle = .none
     }

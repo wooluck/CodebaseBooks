@@ -17,3 +17,14 @@ extension UIView {
 //        mappingView.map { addSubview($0) }
 //    }
 }
+//[
+//    searchImageView, searchLinkButton, searchView
+//].map {
+//    return contentView.addSubview($0)
+//}
+
+extension UIView {
+    func addSubViewMap(_ view: [UIView]) {
+        view.map { return addSubview($0) }
+    }
+}

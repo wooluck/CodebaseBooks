@@ -7,8 +7,11 @@
 
 import Foundation
 import UIKit
+import Alamofire
 
 class NewViewController: UIViewController {
+    
+   
     
     var bookList = [Book]()
     
@@ -33,9 +36,11 @@ class NewViewController: UIViewController {
     // MARK: - ViewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        fetchNewBooks()
         setupView()
         navigationSet()
-        ApiTake()
+
     }
     
     // MARK: - Functions
@@ -54,19 +59,16 @@ class NewViewController: UIViewController {
         self.navigationController?.navigationBar.prefersLargeTitles = true
     }
     
-    func ApiTake() {
-        Task {
-            do {
-                let books = try await NetworkManager.shared.loadBook()
-                
-                self.bookList = books
-                
-                DispatchQueue.main.async {
-                    self.newTableView.reloadData()
-                }
-            }catch {
-                print("Response Error: \(error) @@ \(error.localizedDescription)")
+    func fetchNewBooks()  {
+        AF.request("https://api.itbook.store/1.0/new")
+            .validate()
+            .responseDecodable(of: BookModel.self) { data in
+            guard let books = data.value else {
+                print("responseDecodable ERROR")
+                return
             }
+                self.bookList = books.books
+                self.newTableView.reloadData()
         }
     }
 }
@@ -91,6 +93,7 @@ extension NewViewController: UITableViewDelegate {
 extension NewViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return bookList.count
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

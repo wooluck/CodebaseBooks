@@ -81,7 +81,8 @@ class NewTableCell: UITableViewCell {
     }
     
     func setupLayout() {
-        contentView.addsubViews([newImageView , newLinkButton ,newView])
+//        contentView.addsubViews([newImageView , newLinkButton ,newView])
+        contentView.addSubViewMap([newImageView, newLinkButton, newView])
         
         newImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
@@ -151,7 +152,7 @@ class NewTableCell: UITableViewCell {
         newTitleLabel.text = bookModel.title
         newSubTitleLabel.text = bookModel.subtitle
         newIsbn13Label.text = bookModel.isbn13
-        newPriceLabel.text = bookModel.price
+        newPriceLabel.text = bookModel.price.USDToKRW()
         
         selectionStyle = .none
     }
