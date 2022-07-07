@@ -19,6 +19,7 @@ class NewDetailViewController: UIViewController {
     
     var detailBook: BookDetail?
     
+    
     private lazy var detailView: UIView = {
         let view = UIView()
         view.backgroundColor = .systemGray5

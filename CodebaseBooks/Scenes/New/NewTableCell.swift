@@ -111,6 +111,7 @@ class NewTableCell: UITableViewCell {
             $0.bottom.equalTo(newIsbn13Label.snp.top).offset(-5)
         }
         newIsbn13Label.snp.makeConstraints {
+//            $0.top.equalTo(self.safeAreaInsets.top)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.equalTo(newPriceLabel.snp.top).offset(-5)
         }
@@ -127,12 +128,6 @@ class NewTableCell: UITableViewCell {
         // cell 자체내에 넣으면 안되고 contentView에 넣어야됨
         contentView.layer.cornerRadius = 30
         contentView.layer.masksToBounds = true
-        
-        
-//        self.layer.cornerRadius = 30
-//        self.layer.masksToBounds = true
-//        self.backgroundColor = .yellow
-        
         contentView.backgroundColor = .systemGray5
 
     }

@@ -12,16 +12,7 @@ extension UIView {
     func addsubViews(_ view: [UIView]) {
         view.forEach { addSubview($0) }
     }
-    
-//    func addsubViews(_ mappingView: [UIView]) {
-//        mappingView.map { addSubview($0) }
-//    }
 }
-//[
-//    searchImageView, searchLinkButton, searchView
-//].map {
-//    return contentView.addSubview($0)
-//}
 
 extension UIView {
     func addSubViewMap(_ view: [UIView]) {

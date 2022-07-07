@@ -11,6 +11,8 @@ import Alamofire
 
 class NewViewController: UIViewController {
     
+    
+    
    
     
     var bookList = [Book]()
@@ -52,6 +54,7 @@ class NewViewController: UIViewController {
             $0.top.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(20)
         }
+//        newTableView.equalToSaf
     }
     
     func navigationSet() {
