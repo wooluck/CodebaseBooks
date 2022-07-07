@@ -10,6 +10,7 @@ import SnapKit
 
 extension String {
     
+    // 환전
     func USDToKRW() -> String {
         
         var rawDollar = self.components(separatedBy: ["$", "."]).joined()
@@ -23,6 +24,7 @@ extension String {
         var result = numberFormatter.string(from: NSNumber(value: changingDollar))!
 
         result.append("원")
+        
         return result
     }
 }
