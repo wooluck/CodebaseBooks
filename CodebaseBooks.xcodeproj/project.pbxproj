@@ -67,11 +67,18 @@
 			isa = PBXGroup;
 			children = (
 				7A38076A28747C2B0031CCFE /* Ex_UIView.swift */,
-				C3CC6AAA287528F50045ED8C /* NetworkManager.swift */,
-				C3CC6AAC287529350045ED8C /* BookError.swift */,
 				C3CC6AB028754A8C0045ED8C /* Ex_UIImageView.swift */,
+				C3CC6AAA287528F50045ED8C /* NetworkManager.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		C37B16632876605100674314 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				C3CC6AAC287529350045ED8C /* BookError.swift */,
+			);
+			path = Error;
 			sourceTree = "<group>";
 		};
 		C39C4A0028742536000A1221 = {
@@ -93,6 +100,7 @@
 		C39C4A0B28742536000A1221 /* CodebaseBooks */ = {
 			isa = PBXGroup;
 			children = (
+				C37B16632876605100674314 /* Error */,
 				C3CC6AA5287510780045ED8C /* Model */,
 				7A38076928747BE60031CCFE /* Extensions */,
 				C39C4A20287425CE000A1221 /* Scenes */,

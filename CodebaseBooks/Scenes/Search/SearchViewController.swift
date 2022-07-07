@@ -112,8 +112,8 @@ extension SearchViewController : UITableViewDataSource {
                 self.noLabel.isHidden = true
             }
         } else {
-            cell.configureView(with: bookList[indexPath.row])
             cell.setup()
+            cell.configureView(with: bookList[indexPath.row])
             self.noLabel.isHidden = true
         }
         return cell

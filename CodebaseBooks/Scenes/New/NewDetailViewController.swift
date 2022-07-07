@@ -11,9 +11,9 @@ import UIKit
 class NewDetailViewController: UIViewController {
     
     var prepareBook: Book? {
-        didSet {
+//        didSet {
 //            print(prepareBook)
-        }
+//        }
     }
     
     var detailBook: BookDetail?
@@ -104,9 +104,7 @@ class NewDetailViewController: UIViewController {
     func setupLayout() {
         
         view.addsubViews([detailView, detailTitleLabel, detailSubTitleLabel, detailIsbn13Label, detailPriceLabel, detailLinkButton, detailSeperateView, detailTextView])
-//        view.snp.makeConstraints {
-//            $0.top.equalTo(view.safeAreaLayoutGuide)
-//        }
+
         detailView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
@@ -122,7 +120,7 @@ class NewDetailViewController: UIViewController {
         
         detailTitleLabel.snp.makeConstraints {
             $0.top.equalTo(detailView.snp.bottom).offset(15)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalToSuperview().inset(30)
         }
         detailSubTitleLabel.snp.makeConstraints {
             $0.top.equalTo(detailTitleLabel.snp.bottom).offset(10)

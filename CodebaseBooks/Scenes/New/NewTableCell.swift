@@ -30,7 +30,7 @@ class NewTableCell: UITableViewCell {
     private lazy var newView: UIView = {
         let view = UIView()
         view.backgroundColor = .systemGray4
-//        view.backgroundColor = .orange
+        
         return view
     }()
     
@@ -78,7 +78,6 @@ class NewTableCell: UITableViewCell {
     // MARK: - Functions
     func setup() {
         setupLayout()
-        
     }
     
     func setupLayout() {

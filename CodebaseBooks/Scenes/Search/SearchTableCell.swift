@@ -21,6 +21,9 @@ class SearchTableCell: UITableViewCell {
     
     private lazy var searchLinkButton: UIButton = {
         let button = UIButton()
+        let config = UIImage.SymbolConfiguration(pointSize: 25)
+        
+        button.setPreferredSymbolConfiguration(config, forImageIn: .normal)
         button.setImage(UIImage(systemName: "link.circle"), for: .normal)
         
         return button
@@ -36,7 +39,6 @@ class SearchTableCell: UITableViewCell {
     private lazy var searchTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.text = "제목 없음"
         label.textAlignment = .center
         
         return label
@@ -45,7 +47,6 @@ class SearchTableCell: UITableViewCell {
     private lazy var searchSubTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 18, weight: .medium)
-        label.text = "내용 없음"
         label.textAlignment = .center
         
         return label
@@ -54,7 +55,6 @@ class SearchTableCell: UITableViewCell {
     private lazy var searchIsbn13Label: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15)
-        label.text = "123123123"
         label.textAlignment = .center
         
         return label
@@ -63,7 +63,6 @@ class SearchTableCell: UITableViewCell {
     private lazy var searchPriceLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .bold)
-        label.text = "$100"
         label.textAlignment = .center
         
         return label
@@ -73,7 +72,6 @@ class SearchTableCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        backgroundColor = .systemGray5
         viewSizeAndLayer()
     }
     
@@ -87,7 +85,6 @@ class SearchTableCell: UITableViewCell {
         
         searchImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
-//            $0.bottom.equalTo(searchView.snp.top)
             $0.leading.trailing.equalToSuperview().inset(105)
             $0.height.equalTo(150)
         }
@@ -127,6 +124,8 @@ class SearchTableCell: UITableViewCell {
         
         contentView.layer.cornerRadius = 30
         contentView.layer.masksToBounds = true
+        
+        contentView.backgroundColor = .systemGray5
     }
     
     /// 가져온 데이터 mapping
