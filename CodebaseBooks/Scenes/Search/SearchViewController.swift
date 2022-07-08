@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import Alamofire
+import Moya
 
 class SearchViewController: UIViewController {
     
@@ -16,6 +17,7 @@ class SearchViewController: UIViewController {
     var searchBarWord = ""
     var searchTimer: Timer?
     let searchController = UISearchController(searchResultsController: nil)
+    let service = MoyaProvider<APIService>()
     
     var isFiltering: Bool {
         let searchController = self.navigationItem.searchController
@@ -50,22 +52,8 @@ class SearchViewController: UIViewController {
     // MARK: - ViewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setup()
         navigationSearch()
-        
-//        let myurl = "https://api.itbook.store/1.0/search/" + searchBarWord"
-//        NetworkManager.shared.fetchBooks(apiURL: searchBarWord) { (result: Result<BookModel, BookError>) in
-//
-//            switch result {
-//            case .success(let data):
-//                self.bookList = data.books
-//                self.searchTableView.reloadData()
-//            case .failure(let error):
-//                print("NetworkMagager error: \(error)")
-//            }
-//        }
-        
     }
     
     //MARK: - Functions
@@ -88,7 +76,7 @@ class SearchViewController: UIViewController {
         self.navigationController?.navigationBar.prefersLargeTitles = true
         searchController.searchBar.placeholder = "검색어를 입력해보세요."
         searchController.searchResultsUpdater = self
-//        noLabel.isHidden = true
+        //        noLabel.isHidden = true
     }
 }
 
@@ -143,24 +131,33 @@ extension SearchViewController: UISearchResultsUpdating {
         self.searchTimer?.invalidate()
         
         searchTimer = Timer.scheduledTimer(withTimeInterval: 0, repeats: false, block: { [weak self] timer in            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-                guard let `self` = self else { return }
+            guard let `self` = self else { return }
             
             let searchUrl = "https://api.itbook.store/1.0/search/" + self.searchBarWord
-
-            AF
-                .request(searchUrl)
-                        .responseDecodable(of: BookModel.self) { data in
-                        guard let books = data.value else {
-                            print("responseDecodable ERROR")
-                            return
-                        }
-                            self.bookList = books.books
-                            self.filteredData = self.bookList.filter { $0.title.localizedCaseInsensitiveContains(self.searchBarWord)}
-                            print("self.bookList = books.books =\(self.bookList)")
+            
+            // MoyaProvider를 통해 request를 실행합니다.
+            self.service.request(APIService.search(query: self.searchBarWord)) { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let response):
+                    do {
+                        let books = try JSONDecoder().decode(BookModel.self, from: response.data)
+                        self.bookList = books.books
+                        self.filteredData = self.bookList.filter { $0.title.localizedCaseInsensitiveContains(self.searchBarWord)}
+                        
+                        DispatchQueue.main.async {
                             self.searchTableView.reloadData()
+                        }
+                    } catch(let err) {
+                        print(err.localizedDescription)
                     }
+                case .failure(let error):
+                    print(error.localizedDescription)
                 }
-            })
+            }
         }
+        })
     }
+}
 

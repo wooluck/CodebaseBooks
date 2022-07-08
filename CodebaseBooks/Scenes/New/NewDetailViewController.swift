@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import Alamofire
+import Moya
 
 class NewDetailViewController: UIViewController {
     
@@ -18,6 +19,8 @@ class NewDetailViewController: UIViewController {
     }
     
     var detailBook: BookDetail?
+    
+    let service = MoyaProvider<APIService>()
     
     
     private lazy var detailView: UIView = {
@@ -66,9 +69,11 @@ class NewDetailViewController: UIViewController {
         
         button.setTitleColor(.blue, for: .normal)
         button.backgroundColor = .white
+        //        button.addTarget(self, action: #selector(testButton), for: .touchUpInside)
         
         return button
     }()
+    
     
     private lazy var detailSeperateView: UIView = {
         let view = UIView()
@@ -99,29 +104,38 @@ class NewDetailViewController: UIViewController {
         
         setupLayout()
         navigationSet()
+        readBooks()
         
-        if let isbn = prepareBook?.isbn13 {
-            let myurl = "https://api.itbook.store/1.0/books/" + isbn
-            AF
-                .request(myurl)
-                .responseDecodable(of: BookDetail.self) { response in
-                    switch response.result {
-                    case .success(let data):
-                        self.detailBook = data
-                        let imageURL = URL(string: self.detailBook?.image ?? "nil")
-                        self.detailImageView.load(url: imageURL!)
-                        self.detailTitleLabel.text = self.detailBook?.title
-                        self.detailSubTitleLabel.text = self.detailBook?.subtitle
-                        self.detailIsbn13Label.text = self.detailBook?.isbn13
-                        self.detailPriceLabel.text = self.detailBook?.price
-                        self.detailLinkButton.setTitle(self.detailBook?.url, for: .normal)
+        
+        
+        func readBooks() {
+            // MoyaProvider를 통해 request를 실행합니다.
+            if let isbn = prepareBook?.isbn13 {
+                
+                service.request(APIService.datail(isbn13: isbn)) { [weak self] result in
+                    guard let self = self else { return }
+                    
+                    switch result {
+                    case .success(let response):
+                        do {
+                            let books = try JSONDecoder().decode(BookDetail.self, from: response.data)
+                            self.detailBook = books
+                            let imageURL = URL(string: self.detailBook?.image ?? "nil")
+                            self.detailImageView.load(url: imageURL!)
+                            self.detailTitleLabel.text = self.detailBook?.title
+                            self.detailSubTitleLabel.text = self.detailBook?.subtitle
+                            self.detailIsbn13Label.text = self.detailBook?.isbn13
+                            self.detailPriceLabel.text = self.detailBook?.price
+                            self.detailLinkButton.setTitle(self.detailBook?.url, for: .normal)
+                        } catch(let err) {
+                            print(err.localizedDescription)
+                        }
                         
                     case .failure(let error):
-                        print("Error: \(error)")
+                        print(error.localizedDescription)
                     }
-                    
                 }
-            
+            }
         }
     }
     
@@ -129,7 +143,7 @@ class NewDetailViewController: UIViewController {
     func setupLayout() {
         
         view.addsubViews([detailView, detailTitleLabel, detailSubTitleLabel, detailIsbn13Label, detailPriceLabel, detailLinkButton, detailSeperateView, detailTextView])
-
+        
         detailView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
