@@ -9,92 +9,57 @@ import Foundation
 import UIKit
 import Alamofire
 import Moya
+import Then
 
 class NewDetailViewController: UIViewController {
     
     var prepareBook: Book? {
-        didSet {
-            print(prepareBook)
-        }
+        didSet { print(prepareBook) }
     }
-    
     var detailBook: BookDetail?
-    
     let service = MoyaProvider<APIService>()
     
+    private lazy var detailView = UIView().then {
+        $0.backgroundColor = .systemGray5
+    }
     
-    private lazy var detailView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemGray5
-        
-        return view
-    }()
+    private lazy var detailImageView = UIImageView()
     
-    private lazy var detailImageView: UIImageView = {
-        let imageView = UIImageView()
-        
-        return imageView
-    }()
+    private lazy var detailTitleLabel = UILabel().then {
+        $0.font = .systemFont(ofSize: 18, weight: .bold)
+    }
     
-    private lazy var detailTitleLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .bold)
-        
-        return label
-    }()
+    private lazy var detailSubTitleLabel = UILabel().then {
+        $0.font = .systemFont(ofSize: 16, weight: .medium)
+    }
     
-    private lazy var detailSubTitleLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .medium)
-        
-        return label
-    }()
+    private lazy var detailIsbn13Label = UILabel().then {
+        $0.font = .systemFont(ofSize: 13)
+    }
     
-    private lazy var detailIsbn13Label: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 13)
-        
-        return label
-    }()
+    private lazy var detailPriceLabel = UILabel().then {
+        $0.font = .systemFont(ofSize: 14, weight: .bold)
+    }
     
-    private lazy var detailPriceLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .bold)
-        
-        return label
-    }()
-    
-    private lazy var detailLinkButton: UIButton = {
-        let button = UIButton()
-        
-        button.setTitleColor(.blue, for: .normal)
-        button.backgroundColor = .white
+    private lazy var detailLinkButton = UIButton().then {
+        $0.setTitleColor(.blue, for: .normal)
+        $0.backgroundColor = .white
         //        button.addTarget(self, action: #selector(testButton), for: .touchUpInside)
-        
-        return button
-    }()
+    }
     
+    private lazy var detailSeperateView = UIView().then {
+        $0.backgroundColor = .systemGray3
+    }
     
-    private lazy var detailSeperateView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemGray3
-        
-        return view
-    }()
-    
-    private lazy var detailTextView: UITextView = {
-        let textView = UITextView()
-        textView.font = .systemFont(ofSize: 20, weight: .medium)
-        textView.text = "내용을 입력하세요."
-        textView.textColor = .placeholderText
-        textView.layer.cornerRadius = 10
-        textView.layer.borderColor = UIColor.systemGray2.cgColor
-        textView.layer.borderWidth = 1
-        
-        textView.delegate = self
-        
-        return textView
-    }()
+    private lazy var detailTextView = UITextView().then {
+        $0.font = .systemFont(ofSize: 20, weight: .medium)
+        $0.text = "내용을 입력하세요."
+        $0.textColor = .placeholderText
+        $0.layer.cornerRadius = 10
+        $0.layer.borderColor = UIColor.systemGray2.cgColor
+        $0.layer.borderWidth = 1
+        $0.delegate = self
+    }
     
     // MARK: - ViewDidLoad()
     override func viewDidLoad() {
@@ -105,38 +70,6 @@ class NewDetailViewController: UIViewController {
         setupLayout()
         navigationSet()
         readBooks()
-        
-        
-        
-        func readBooks() {
-            // MoyaProvider를 통해 request를 실행합니다.
-            if let isbn = prepareBook?.isbn13 {
-                
-                service.request(APIService.datail(isbn13: isbn)) { [weak self] result in
-                    guard let self = self else { return }
-                    
-                    switch result {
-                    case .success(let response):
-                        do {
-                            let books = try JSONDecoder().decode(BookDetail.self, from: response.data)
-                            self.detailBook = books
-                            let imageURL = URL(string: self.detailBook?.image ?? "nil")
-                            self.detailImageView.load(url: imageURL!)
-                            self.detailTitleLabel.text = self.detailBook?.title
-                            self.detailSubTitleLabel.text = self.detailBook?.subtitle
-                            self.detailIsbn13Label.text = self.detailBook?.isbn13
-                            self.detailPriceLabel.text = self.detailBook?.price
-                            self.detailLinkButton.setTitle(self.detailBook?.url, for: .normal)
-                        } catch(let err) {
-                            print(err.localizedDescription)
-                        }
-                        
-                    case .failure(let error):
-                        print(error.localizedDescription)
-                    }
-                }
-            }
-        }
     }
     
     // MARK: - Functions
@@ -192,6 +125,36 @@ class NewDetailViewController: UIViewController {
     func navigationSet() {
         self.navigationItem.title = "Detail Book"
         self.navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    func readBooks() {
+        // MoyaProvider를 통해 request를 실행합니다.
+        if let isbn = prepareBook?.isbn13 {
+            
+            service.request(APIService.datail(isbn13: isbn)) { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let response):
+                    do {
+                        let books = try JSONDecoder().decode(BookDetail.self, from: response.data)
+                        self.detailBook = books
+                        let imageURL = URL(string: self.detailBook?.image ?? "nil")
+                        self.detailImageView.load(url: imageURL!)
+                        self.detailTitleLabel.text = self.detailBook?.title
+                        self.detailSubTitleLabel.text = self.detailBook?.subtitle
+                        self.detailIsbn13Label.text = self.detailBook?.isbn13
+                        self.detailPriceLabel.text = self.detailBook?.price
+                        self.detailLinkButton.setTitle(self.detailBook?.url, for: .normal)
+                    } catch(let err) {
+                        print(err.localizedDescription)
+                    }
+                    
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
     }
 }
 

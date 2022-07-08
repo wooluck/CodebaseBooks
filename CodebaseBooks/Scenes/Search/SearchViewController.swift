@@ -26,23 +26,17 @@ class SearchViewController: UIViewController {
         return isActive && isSearchBarHasText
     }
     
-    private lazy var searchTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.separatorStyle = .none
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(SearchTableCell.self, forCellReuseIdentifier: "SearchTableCell")
-        
-        return tableView
-    }()
+    private lazy var searchTableView = UITableView().then {
+        $0.separatorStyle = .none
+        $0.delegate = self
+        $0.dataSource = self
+        $0.register(SearchTableCell.self, forCellReuseIdentifier: "SearchTableCell")
+    }
     
-    private lazy var noLabel: UILabel = {
-        let label = UILabel()
-        label.text = "결과가 없습니다."
-        label.font = .systemFont(ofSize: 23, weight: .bold)
-        
-        return label
-    }()
+    private lazy var noLabel = UILabel().then {
+        $0.text = "결과가 없습니다."
+        $0.font = .systemFont(ofSize: 23, weight: .bold)
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -59,7 +53,6 @@ class SearchViewController: UIViewController {
     //MARK: - Functions
     func setup() {
         view.addsubViews([searchTableView, noLabel])
-        
         searchTableView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
@@ -117,8 +110,6 @@ extension SearchViewController : UITableViewDataSource {
         return cell
     }
 }
-
-
 
 extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {

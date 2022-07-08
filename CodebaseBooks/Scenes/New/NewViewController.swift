@@ -9,26 +9,22 @@ import Foundation
 import UIKit
 import Alamofire
 import Moya
+import Then
 
 class NewViewController: UIViewController {
     
     var bookList = [Book]()
-    
     var newApi = "https://api.itbook.store/1.0/new"
-    
+
     // make Moya provder
     let service = MoyaProvider<APIService>()
     
-    private lazy var newTableView : UITableView = {
-        let tableView = UITableView()
-        tableView.separatorStyle = .none
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        tableView.register(NewTableCell.self, forCellReuseIdentifier: "NewTableCell")
-        
-        return tableView
-    }()
+    private lazy var newTableView = UITableView().then {
+        $0.separatorStyle = .none
+        $0.delegate = self
+        $0.dataSource = self
+        $0.register(NewTableCell.self, forCellReuseIdentifier: "NewTableCell")
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -67,9 +63,7 @@ class NewViewController: UIViewController {
     }
     
     func setupView() {
-        
         view.addsubViews([newTableView])
-        
         newTableView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(20)
@@ -92,7 +86,6 @@ extension NewViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let newDetailVC = NewDetailViewController()
         newDetailVC.prepareBook = self.bookList[indexPath.row]
-        
         self.navigationController?.pushViewController(newDetailVC, animated: true)
     }
 }
@@ -104,13 +97,11 @@ extension NewViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewTableCell", for: indexPath) as? NewTableCell else { return UITableViewCell()}
-        
         cell.selectionStyle = .none
         cell.setup()
         cell.configureView(with: bookList[indexPath.row])
         
         return cell
     }
-    
 }
 

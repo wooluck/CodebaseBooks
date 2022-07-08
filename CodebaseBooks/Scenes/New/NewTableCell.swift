@@ -8,76 +8,54 @@
 import Foundation
 import UIKit
 import SnapKit
+import Then
 
 class NewTableCell: UITableViewCell {
     
-    private var newImageView: UIImageView = {
-        let imageView = UIImageView()
-        
-        return imageView
-    }()
+    private var newImageView = UIImageView()
     
-    private lazy var newLinkButton: UIButton = {
-        let button = UIButton()
+    private lazy var newLinkButton = UIButton().then {
         let config = UIImage.SymbolConfiguration(pointSize: 25)
-        
-        button.setPreferredSymbolConfiguration(config, forImageIn: .normal)
-        button.setImage(UIImage(systemName: "link.circle"), for: .normal)
-        
-        return button
-    }()
+        $0.setPreferredSymbolConfiguration(config, forImageIn: .normal)
+        $0.setImage(UIImage(systemName: "link.circle"), for: .normal)
+    }
     
-    private lazy var newView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemGray4
-        
-        return view
-    }()
+    private lazy var newView = UIView().then {
+        $0.backgroundColor = .systemGray4
+    }
     
-    private lazy var newTitleLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.textAlignment = .center
-        
-        return label
-    }()
+    private lazy var newTitleLabel = UILabel().then {
+        $0.font = .systemFont(ofSize: 20, weight: .bold)
+        $0.textAlignment = .center
+    }
     
-    private lazy var newSubTitleLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .medium)
-        label.textAlignment = .center
-        
-        return label
-    }()
+    private lazy var newSubTitleLabel = UILabel().then {
+        $0.font = .systemFont(ofSize: 18, weight: .medium)
+        $0.textAlignment = .center
+    }
     
-    private lazy var newIsbn13Label: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 15)
-        label.textAlignment = .center
-        
-        return label
-    }()
+    private lazy var newIsbn13Label = UILabel().then {
+        $0.font = .systemFont(ofSize: 15)
+        $0.textAlignment = .center
+    }
     
-    private lazy var newPriceLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .bold)
-        label.textAlignment = .center
-        
-        return label
-    }()
+    private lazy var newPriceLabel = UILabel().then {
+        $0.font = .systemFont(ofSize: 16, weight: .bold)
+        $0.textAlignment = .center
+    }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         viewSizeAndLayer()
     }
-
+    
     // MARK: - Functions
     func setup() {
         setupLayout()
     }
     
     func setupLayout() {
-//        contentView.addsubViews([newImageView , newLinkButton ,newView])
+        //        contentView.addsubViews([newImageView , newLinkButton ,newView])
         contentView.addSubViewMap([newImageView, newLinkButton, newView])
         
         newImageView.snp.makeConstraints {
@@ -106,32 +84,29 @@ class NewTableCell: UITableViewCell {
             $0.bottom.equalTo(newIsbn13Label.snp.top).offset(-5)
         }
         newIsbn13Label.snp.makeConstraints {
-//            $0.top.equalTo(self.safeAreaInsets.top)
+            //            $0.top.equalTo(self.safeAreaInsets.top)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.equalTo(newPriceLabel.snp.top).offset(-5)
         }
         newPriceLabel.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview().inset(7)
-            
         }
     }
     
     /// 테이블 뷰 셀 사이의 간격, 그림자, 셀 둥글게
     func viewSizeAndLayer() {
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0))
-
+        
         // cell 자체내에 넣으면 안되고 contentView에 넣어야됨
         contentView.layer.cornerRadius = 30
         contentView.layer.masksToBounds = true
         contentView.backgroundColor = .systemGray5
-
     }
     
     /// 데이터 가져오기
     func configureView(with bookModel: Book) {
-
-            // 이미지 불러오기
+        // 이미지 불러오기
         if let url = URL(string: bookModel.image) {
             newImageView.load(url: url)
             let imageData = try! Data(contentsOf: url)
@@ -139,17 +114,12 @@ class NewTableCell: UITableViewCell {
         } else {
             print("Image URL Not Failed")
         }
-       
         newTitleLabel.text = bookModel.title
         newSubTitleLabel.text = bookModel.subtitle
         newIsbn13Label.text = bookModel.isbn13
         newPriceLabel.text = bookModel.price.USDToKRW()
-        
         selectionStyle = .none
     }
-    
-    
-    
 }
 
 
