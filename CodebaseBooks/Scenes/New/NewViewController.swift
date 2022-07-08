@@ -5,17 +5,14 @@
 //  Created by pineone on 2022/07/05.
 //
 
-import Foundation
 import UIKit
 import Alamofire
 import Moya
 import Then
 
 class NewViewController: UIViewController {
-    
     var bookList = [Book]()
-    var newApi = "https://api.itbook.store/1.0/new"
-
+    
     // make Moya provder
     let service = MoyaProvider<APIService>()
     
@@ -26,6 +23,7 @@ class NewViewController: UIViewController {
         $0.register(NewTableCell.self, forCellReuseIdentifier: "NewTableCell")
     }
     
+    // MARK: - ViewWillAppear()
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = false
@@ -34,13 +32,13 @@ class NewViewController: UIViewController {
     // MARK: - ViewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
+        setupLayout()
         navigationSet()
         readBooks()
     }
     
     // MARK: - Functions
-    func readBooks() {
+    private func readBooks() {
         // MoyaProvider를 통해 request를 실행합니다.
         service.request(APIService.new) { [weak self] result in
             guard let self = self else { return }
@@ -62,18 +60,17 @@ class NewViewController: UIViewController {
         }
     }
     
-    func setupView() {
-        view.addsubViews([newTableView])
+    private func setupLayout() {
+        view.addSubview(newTableView)
         newTableView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(20)
-            //            $0.top.equalToSafeArea(self.view)
         }
     }
     
     func navigationSet() {
-        self.navigationItem.title = "New Books"
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.title = "New Books"
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
 }
 
@@ -86,7 +83,7 @@ extension NewViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let newDetailVC = NewDetailViewController()
         newDetailVC.prepareBook = self.bookList[indexPath.row]
-        self.navigationController?.pushViewController(newDetailVC, animated: true)
+        navigationController?.pushViewController(newDetailVC, animated: true)
     }
 }
 
@@ -97,10 +94,7 @@ extension NewViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewTableCell", for: indexPath) as? NewTableCell else { return UITableViewCell()}
-        cell.selectionStyle = .none
-        cell.setup()
         cell.configureView(with: bookList[indexPath.row])
-        
         return cell
     }
 }

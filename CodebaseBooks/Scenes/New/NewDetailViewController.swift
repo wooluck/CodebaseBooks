@@ -5,19 +5,16 @@
 //  Created by pineone on 2022/07/06.
 //
 
-import Foundation
 import UIKit
 import Alamofire
 import Moya
 import Then
 
 class NewDetailViewController: UIViewController {
-    
-    var prepareBook: Book? {
-        didSet { print(prepareBook) }
-    }
+    var prepareBook: Book?
     var detailBook: BookDetail?
     let service = MoyaProvider<APIService>()
+    
     
     private lazy var detailView = UIView().then {
         $0.backgroundColor = .systemGray5
@@ -44,7 +41,6 @@ class NewDetailViewController: UIViewController {
     private lazy var detailLinkButton = UIButton().then {
         $0.setTitleColor(.blue, for: .normal)
         $0.backgroundColor = .white
-        //        button.addTarget(self, action: #selector(testButton), for: .touchUpInside)
     }
     
     private lazy var detailSeperateView = UIView().then {
@@ -64,26 +60,22 @@ class NewDetailViewController: UIViewController {
     // MARK: - ViewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tabBarController?.tabBar.isHidden = true
-        self.view.backgroundColor = .white
-        
         setupLayout()
-        navigationSet()
+        setLayoutContentView()
         readBooks()
     }
     
     // MARK: - Functions
-    func setupLayout() {
+    private func setupLayout() {
         
         view.addsubViews([detailView, detailTitleLabel, detailSubTitleLabel, detailIsbn13Label, detailPriceLabel, detailLinkButton, detailSeperateView, detailTextView])
-        
         detailView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(200)
         }
         
-        detailView.addsubViews([detailImageView])
+        detailView.addSubview(detailImageView)
         detailImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.bottom.equalTo(detailView.snp.bottom)
@@ -122,12 +114,14 @@ class NewDetailViewController: UIViewController {
         }
     }
     
-    func navigationSet() {
-        self.navigationItem.title = "Detail Book"
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+    private func setLayoutContentView() {
+        tabBarController?.tabBar.isHidden = true
+        view.backgroundColor = .white
+        navigationItem.title = "Detail Book"
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
-    func readBooks() {
+    private func readBooks() {
         // MoyaProvider를 통해 request를 실행합니다.
         if let isbn = prepareBook?.isbn13 {
             

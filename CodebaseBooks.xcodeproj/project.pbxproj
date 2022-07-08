@@ -107,16 +107,12 @@
 		C39C4A0B28742536000A1221 /* CodebaseBooks */ = {
 			isa = PBXGroup;
 			children = (
+				C3BFD3D9287813EA00D23CE1 /* SupportingFile */,
 				C3BFD3D32877EDE000D23CE1 /* Networking */,
 				C37B16632876605100674314 /* Error */,
 				C3CC6AA5287510780045ED8C /* Model */,
 				7A38076928747BE60031CCFE /* Extensions */,
 				C39C4A20287425CE000A1221 /* Scenes */,
-				C39C4A0C28742536000A1221 /* AppDelegate.swift */,
-				C39C4A0E28742536000A1221 /* SceneDelegate.swift */,
-				C39C4A1528742537000A1221 /* Assets.xcassets */,
-				C39C4A1728742537000A1221 /* LaunchScreen.storyboard */,
-				C39C4A1A28742537000A1221 /* Info.plist */,
 			);
 			path = CodebaseBooks;
 			sourceTree = "<group>";
@@ -124,7 +120,7 @@
 		C39C4A20287425CE000A1221 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
-				C39C4A1028742536000A1221 /* TabBarController.swift */,
+				C3BFD3DA2878150600D23CE1 /* TabBar */,
 				C39C4A21287425DA000A1221 /* New */,
 				C39C4A22287425E1000A1221 /* Search */,
 			);
@@ -156,6 +152,26 @@
 				C3BFD3D42877EDEF00D23CE1 /* APIService.swift */,
 			);
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		C3BFD3D9287813EA00D23CE1 /* SupportingFile */ = {
+			isa = PBXGroup;
+			children = (
+				C39C4A0C28742536000A1221 /* AppDelegate.swift */,
+				C39C4A0E28742536000A1221 /* SceneDelegate.swift */,
+				C39C4A1528742537000A1221 /* Assets.xcassets */,
+				C39C4A1728742537000A1221 /* LaunchScreen.storyboard */,
+				C39C4A1A28742537000A1221 /* Info.plist */,
+			);
+			path = SupportingFile;
+			sourceTree = "<group>";
+		};
+		C3BFD3DA2878150600D23CE1 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				C39C4A1028742536000A1221 /* TabBarController.swift */,
+			);
+			path = TabBar;
 			sourceTree = "<group>";
 		};
 		C3CC6AA5287510780045ED8C /* Model */ = {
@@ -406,7 +422,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = CodebaseBooks/Info.plist;
+				INFOPLIST_FILE = CodebaseBooks/SupportingFile/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -432,7 +448,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = CodebaseBooks/Info.plist;
+				INFOPLIST_FILE = CodebaseBooks/SupportingFile/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

@@ -5,13 +5,11 @@
 //  Created by pineone on 2022/07/05.
 //
 
-import Foundation
 import UIKit
 import Alamofire
 import Moya
 
 class SearchViewController: UIViewController {
-    
     var bookList = [Book]()
     var filteredData = [Book]()
     var searchBarWord = ""
@@ -20,7 +18,7 @@ class SearchViewController: UIViewController {
     let service = MoyaProvider<APIService>()
     
     var isFiltering: Bool {
-        let searchController = self.navigationItem.searchController
+        let searchController = navigationItem.searchController
         let isActive = searchController?.isActive ?? false
         let isSearchBarHasText = searchController?.searchBar.text?.isEmpty == false
         return isActive && isSearchBarHasText
@@ -38,20 +36,21 @@ class SearchViewController: UIViewController {
         $0.font = .systemFont(ofSize: 23, weight: .bold)
     }
     
+    // MARK: - ViewWillAppear()
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.tabBarController?.tabBar.isHidden = false
+        tabBarController?.tabBar.isHidden = false
     }
     
     // MARK: - ViewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
-        setup()
+        setupLayout()
         navigationSearch()
     }
     
     //MARK: - Functions
-    func setup() {
+    private func setupLayout() {
         view.addsubViews([searchTableView, noLabel])
         searchTableView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
@@ -63,13 +62,12 @@ class SearchViewController: UIViewController {
         }
     }
     
-    func navigationSearch() {
+    private func navigationSearch() {
         navigationItem.searchController = searchController
-        self.navigationItem.title = "Search Books"
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.title = "Search Books"
+        navigationController?.navigationBar.prefersLargeTitles = true
         searchController.searchBar.placeholder = "검색어를 입력해보세요."
         searchController.searchResultsUpdater = self
-        //        noLabel.isHidden = true
     }
 }
 
@@ -82,8 +80,7 @@ extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let newDetailVC = NewDetailViewController()
         newDetailVC.prepareBook = self.bookList[indexPath.row]
-        
-        self.navigationController?.pushViewController(newDetailVC, animated: true)
+        navigationController?.pushViewController(newDetailVC, animated: true)
     }
 }
 
@@ -93,19 +90,16 @@ extension SearchViewController : UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "SearchTableCell", for: indexPath) as? SearchTableCell else { return UITableViewCell()}
         
         if self.isFiltering {
             if filteredData.count != 0  {
-                cell.setup()
                 cell.configureView(with: filteredData[indexPath.row])
-                self.noLabel.isHidden = true
+                noLabel.isHidden = true
             }
         } else {
-            cell.setup()
             cell.configureView(with: bookList[indexPath.row])
-            self.noLabel.isHidden = true
+            noLabel.isHidden = true
         }
         return cell
     }
@@ -115,16 +109,13 @@ extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         /// searchbar에 입력한 텍스트
         guard let text = searchController.searchBar.text else { return }
-        self.searchBarWord = text
-        self.noLabel.isHidden = filteredData.isEmpty ? false : true
-        self.searchTableView.reloadData()
-        
-        self.searchTimer?.invalidate()
+        searchBarWord = text
+        noLabel.isHidden = filteredData.isEmpty ? false : true
+        searchTableView.reloadData()
+        searchTimer?.invalidate()
         
         searchTimer = Timer.scheduledTimer(withTimeInterval: 0, repeats: false, block: { [weak self] timer in            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
             guard let `self` = self else { return }
-            
-            let searchUrl = "https://api.itbook.store/1.0/search/" + self.searchBarWord
             
             // MoyaProvider를 통해 request를 실행합니다.
             self.service.request(APIService.search(query: self.searchBarWord)) { [weak self] result in

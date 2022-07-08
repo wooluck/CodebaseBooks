@@ -5,14 +5,12 @@
 //  Created by pineone on 2022/07/05.
 //
 
-import Foundation
 import UIKit
 import SnapKit
 import Then
 
 class NewTableCell: UITableViewCell {
-    
-    private var newImageView = UIImageView()
+    private lazy var newImageView = UIImageView()
     
     private lazy var newLinkButton = UIButton().then {
         let config = UIImage.SymbolConfiguration(pointSize: 25)
@@ -44,20 +42,37 @@ class NewTableCell: UITableViewCell {
         $0.textAlignment = .center
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        viewSizeAndLayer()
-    }
+//    override var contentView: UIView {
+//        let view = UIView().then {
+//            $0.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0))
+//            $0.layer.cornerRadius = 30
+//            $0.layer.masksToBounds = true
+//            $0.backgroundColor = .systemGray5
+//        }
+//
+//        return view
+//    }
+
     
-    // MARK: - Functions
-    func setup() {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupLayoutContentView()
         setupLayout()
     }
     
-    func setupLayout() {
-        //        contentView.addsubViews([newImageView , newLinkButton ,newView])
-        contentView.addSubViewMap([newImageView, newLinkButton, newView])
-        
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+//    override func layoutSubviews() {
+//        super.layoutSubviews()
+//        
+//    }
+    
+    // MARK: - Functions
+
+    private func setupLayout() {
+        contentView.addsubViews([newImageView, newLinkButton, newView])
         newImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(105)
@@ -67,14 +82,12 @@ class NewTableCell: UITableViewCell {
             $0.top.trailing.equalToSuperview().inset(15)
             $0.leading.equalTo(newImageView.snp.trailing).offset(60)
         }
-        
         newView.snp.makeConstraints{
             $0.top.equalTo(newImageView.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
         }
         
         newView.addsubViews([newTitleLabel, newSubTitleLabel, newIsbn13Label, newPriceLabel])
-        
         newTitleLabel.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.top.equalToSuperview().inset(10)
@@ -84,7 +97,6 @@ class NewTableCell: UITableViewCell {
             $0.bottom.equalTo(newIsbn13Label.snp.top).offset(-5)
         }
         newIsbn13Label.snp.makeConstraints {
-            //            $0.top.equalTo(self.safeAreaInsets.top)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.equalTo(newPriceLabel.snp.top).offset(-5)
         }
@@ -95,7 +107,8 @@ class NewTableCell: UITableViewCell {
     }
     
     /// 테이블 뷰 셀 사이의 간격, 그림자, 셀 둥글게
-    func viewSizeAndLayer() {
+    private func setupLayoutContentView() {
+        selectionStyle = .none
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0))
         
         // cell 자체내에 넣으면 안되고 contentView에 넣어야됨
@@ -105,7 +118,7 @@ class NewTableCell: UITableViewCell {
     }
     
     /// 데이터 가져오기
-    func configureView(with bookModel: Book) {
+    public func configureView(with bookModel: Book) {
         // 이미지 불러오기
         if let url = URL(string: bookModel.image) {
             newImageView.load(url: url)

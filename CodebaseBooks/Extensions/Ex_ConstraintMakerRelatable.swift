@@ -5,7 +5,6 @@
 //  Created by pineone on 2022/07/07.
 //
 
-import Foundation
 import SnapKit
 import UIKit
 

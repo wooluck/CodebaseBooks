@@ -5,90 +5,78 @@
 //  Created by pineone on 2022/07/06.
 //
 
-import Foundation
 import UIKit
 import Kingfisher
+import Then
 
 class SearchTableCell: UITableViewCell {
-    
     var preparebook: Book?
-
-    private var searchImageView: UIImageView = {
-        let imageView = UIImageView()
-
-        return imageView
-    }()
     
-    private lazy var searchLinkButton: UIButton = {
-        let button = UIButton()
+    private var searchImageView = UIImageView()
+    
+    private lazy var searchLinkButton = UIButton().then {
         let config = UIImage.SymbolConfiguration(pointSize: 25)
-        
-        button.setPreferredSymbolConfiguration(config, forImageIn: .normal)
-        button.setImage(UIImage(systemName: "link.circle"), for: .normal)
-        
-        return button
-    }()
-    
-    private lazy var searchView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemGray4
-        
-        return view
-    }()
-    
-    private lazy var searchTitleLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.textAlignment = .center
-        
-        return label
-    }()
-    
-    private lazy var searchSubTitleLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .medium)
-        label.textAlignment = .center
-        
-        return label
-    }()
-    
-    private lazy var searchIsbn13Label: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 15)
-        label.textAlignment = .center
-        
-        return label
-    }()
-    
-    private lazy var searchPriceLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .bold)
-        label.textAlignment = .center
-        
-        return label
-    }()
-    
-    
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        viewSizeAndLayer()
+        $0.setPreferredSymbolConfiguration(config, forImageIn: .normal)
+        $0.setImage(UIImage(systemName: "link.circle"), for: .normal)
     }
+    
+    private lazy var searchView = UIView().then {
+        $0.backgroundColor = .systemGray4
+    }
+    
+    private lazy var searchTitleLabel = UILabel().then {
+        $0.font = .systemFont(ofSize: 20, weight: .bold)
+        $0.textAlignment = .center
+    }
+    
+    private lazy var searchSubTitleLabel = UILabel().then {
+        $0.font = .systemFont(ofSize: 18, weight: .medium)
+        $0.textAlignment = .center
+    }
+    
+    private lazy var searchIsbn13Label = UILabel().then {
+        $0.font = .systemFont(ofSize: 15)
+        $0.textAlignment = .center
+    }
+    
+    private lazy var searchPriceLabel = UILabel().then {
+        $0.font = .systemFont(ofSize: 16, weight: .bold)
+        $0.textAlignment = .center
+    }
+    
+//    override var contentView: UIView {
+//        let view = UIView().then {
+//            $0.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0))
+//            $0.layer.cornerRadius = 30
+//            $0.layer.masksToBounds = true
+//            $0.backgroundColor = .systemGray5
+//        }
+//
+//        return view
+//    }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupLayoutContentView()
+        setupLayout()
+
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+//    override func layoutSubviews() {
+//        super.layoutSubviews()
+//        setupLayoutContentView()
+//        setupLayout()
+//
+//    }
     
     // MARK: - Functions
-    func setup() {
-        setupLayout()
-    }
-    
-    func setupLayout() {
+    private func setupLayout() {
         
-        [
-            searchImageView, searchLinkButton, searchView
-        ].map {
-            return contentView.addSubview($0)
-        }
-//        contentView.addsubViews([searchImageView , searchLinkButton ,searchView])
-        
+        contentView.addsubViews([searchImageView, searchLinkButton, searchView])
         searchImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(105)
@@ -98,14 +86,12 @@ class SearchTableCell: UITableViewCell {
             $0.top.trailing.equalToSuperview().inset(15)
             $0.leading.equalTo(searchImageView.snp.trailing).offset(60)
         }
-        
         searchView.snp.makeConstraints{
             $0.top.equalTo(searchImageView.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
         }
         
         searchView.addsubViews([searchTitleLabel, searchSubTitleLabel, searchIsbn13Label, searchPriceLabel])
-        
         searchTitleLabel.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(30)
             $0.top.equalToSuperview().inset(10)
@@ -125,19 +111,16 @@ class SearchTableCell: UITableViewCell {
     }
     
     /// 테이블 뷰 셀 사이의 간격, 그림자, 셀 둥글게
-    func viewSizeAndLayer() {
+    private func setupLayoutContentView() {
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0))
-        
         contentView.layer.cornerRadius = 30
         contentView.layer.masksToBounds = true
-        
         contentView.backgroundColor = .systemGray5
     }
     
     /// 가져온 데이터 mapping
     func configureView(with bookModel: Book) {
-
-            // 이미지 불러오기
+        // 이미지 불러오기
         if let url = URL(string: bookModel.image) {
             searchImageView.load(url: url)
             let imageData = try! Data(contentsOf: url)
@@ -145,17 +128,13 @@ class SearchTableCell: UITableViewCell {
         } else {
             print("Image URL Not Failed")
         }
-       
+        
         searchTitleLabel.text = bookModel.title
         searchSubTitleLabel.text = bookModel.subtitle
         searchIsbn13Label.text = bookModel.isbn13
         searchPriceLabel.text = bookModel.price.USDToKRW()
-        
         selectionStyle = .none
     }
-    
-    
-    
 }
 
 
