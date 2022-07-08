@@ -95,12 +95,34 @@ class NewDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tabBarController?.tabBar.isHidden = true
+        self.view.backgroundColor = .white
         
-        fetchSearchBooks(isbn13: self.prepareBook?.isbn13 ?? "nil")
         setupLayout()
         navigationSet()
-
-        self.view.backgroundColor = .white
+        
+        if let isbn = prepareBook?.isbn13 {
+            let myurl = "https://api.itbook.store/1.0/books/" + isbn
+            AF
+                .request(myurl)
+                .responseDecodable(of: BookDetail.self) { response in
+                    switch response.result {
+                    case .success(let data):
+                        self.detailBook = data
+                        let imageURL = URL(string: self.detailBook?.image ?? "nil")
+                        self.detailImageView.load(url: imageURL!)
+                        self.detailTitleLabel.text = self.detailBook?.title
+                        self.detailSubTitleLabel.text = self.detailBook?.subtitle
+                        self.detailIsbn13Label.text = self.detailBook?.isbn13
+                        self.detailPriceLabel.text = self.detailBook?.price
+                        self.detailLinkButton.setTitle(self.detailBook?.url, for: .normal)
+                        
+                    case .failure(let error):
+                        print("Error: \(error)")
+                    }
+                    
+                }
+            
+        }
     }
     
     // MARK: - Functions
@@ -157,28 +179,6 @@ class NewDetailViewController: UIViewController {
         self.navigationItem.title = "Detail Book"
         self.navigationController?.navigationBar.prefersLargeTitles = true
     }
-    
-    func fetchSearchBooks(isbn13: String) {
-        AF.request("https://api.itbook.store/1.0/books/" + isbn13)
-            .validate()
-            .responseDecodable(of: BookDetail.self) { data in
-            guard let books = data.value else {
-                print("responseDecodable ERROR")
-                return
-            }
-                self.detailBook = books
-                let imageURL = URL(string: self.detailBook?.image ?? "nil")
-                self.detailImageView.load(url: imageURL!)
-                self.detailTitleLabel.text = self.detailBook?.title
-                self.detailSubTitleLabel.text = self.detailBook?.subtitle
-                self.detailIsbn13Label.text = self.detailBook?.isbn13
-                self.detailPriceLabel.text = self.detailBook?.price
-                self.detailLinkButton.setTitle(self.detailBook?.url, for: .normal)
-                
-                
-            }
-    }
-    
 }
 
 // MARK: - Extension (Delegate, DataSource)

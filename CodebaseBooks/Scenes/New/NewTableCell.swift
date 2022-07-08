@@ -68,13 +68,9 @@ class NewTableCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-//        backgroundColor = .systemGray5
         viewSizeAndLayer()
-        
     }
-    
-    
-    
+
     // MARK: - Functions
     func setup() {
         setupLayout()
@@ -97,7 +93,6 @@ class NewTableCell: UITableViewCell {
         newView.snp.makeConstraints{
             $0.top.equalTo(newImageView.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
-//            $0.bottom.equalToSuperview().offset(-20)
         }
         
         newView.addsubViews([newTitleLabel, newSubTitleLabel, newIsbn13Label, newPriceLabel])
@@ -118,6 +113,7 @@ class NewTableCell: UITableViewCell {
         newPriceLabel.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview().inset(7)
+            
         }
     }
     

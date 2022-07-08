@@ -10,11 +10,7 @@ import UIKit
 import Alamofire
 
 class NewViewController: UIViewController {
-    
-    
-    
-   
-    
+
     var bookList = [Book]()
     
     var newApi = "https://api.itbook.store/1.0/new"
@@ -38,12 +34,21 @@ class NewViewController: UIViewController {
     // MARK: - ViewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        fetchNewBooks()
         setupView()
         navigationSet()
-
-    }
+        
+        AF
+            .request(newApi)
+            .responseDecodable(of: BookModel.self) { response in
+                switch response.result {
+                case .success(let data):
+                    self.bookList = data.books
+                    self.newTableView.reloadData()
+                case .failure(let error):
+                    print("Error: \(error)")
+                }
+            }
+        }
     
     // MARK: - Functions
     func setupView() {
@@ -53,31 +58,15 @@ class NewViewController: UIViewController {
         newTableView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(20)
+//            $0.top.equalToSafeArea(self.view)
         }
-//        newTableView.equalToSaf
     }
     
     func navigationSet() {
         self.navigationItem.title = "New Books"
         self.navigationController?.navigationBar.prefersLargeTitles = true
     }
-    
-    func fetchNewBooks()  {
-        AF.request("https://api.itbook.store/1.0/new")
-            .validate()
-            .responseDecodable(of: BookModel.self) { data in
-            guard let books = data.value else {
-                print("responseDecodable ERROR")
-                return
-            }
-                self.bookList = books.books
-                self.newTableView.reloadData()
-        }
-    }
 }
-
-
-
 
 // MARK: - Extension (Delegate, DataSource)
 extension NewViewController: UITableViewDelegate {

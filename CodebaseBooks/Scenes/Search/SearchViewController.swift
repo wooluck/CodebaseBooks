@@ -54,6 +54,18 @@ class SearchViewController: UIViewController {
         setup()
         navigationSearch()
         
+//        let myurl = "https://api.itbook.store/1.0/search/" + searchBarWord"
+//        NetworkManager.shared.fetchBooks(apiURL: searchBarWord) { (result: Result<BookModel, BookError>) in
+//
+//            switch result {
+//            case .success(let data):
+//                self.bookList = data.books
+//                self.searchTableView.reloadData()
+//            case .failure(let error):
+//                print("NetworkMagager error: \(error)")
+//            }
+//        }
+        
     }
     
     //MARK: - Functions
@@ -132,9 +144,11 @@ extension SearchViewController: UISearchResultsUpdating {
         
         searchTimer = Timer.scheduledTimer(withTimeInterval: 0, repeats: false, block: { [weak self] timer in            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
                 guard let `self` = self else { return }
+            
+            let searchUrl = "https://api.itbook.store/1.0/search/" + self.searchBarWord
 
-                AF.request("https://api.itbook.store/1.0/search/" + self.searchBarWord)
-                        .validate()
+            AF
+                .request(searchUrl)
                         .responseDecodable(of: BookModel.self) { data in
                         guard let books = data.value else {
                             print("responseDecodable ERROR")
@@ -145,8 +159,8 @@ extension SearchViewController: UISearchResultsUpdating {
                             print("self.bookList = books.books =\(self.bookList)")
                             self.searchTableView.reloadData()
                     }
-            }
-        })
+                }
+            })
+        }
     }
-}
 
