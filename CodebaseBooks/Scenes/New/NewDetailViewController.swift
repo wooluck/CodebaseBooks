@@ -14,6 +14,7 @@ class NewDetailViewController: UIViewController {
     var prepareBook: Book?
     var detailBook: BookDetail?
     let service = MoyaProvider<APIService>()
+    private let DATA_KEY = "Saved Data"
     
     
     private lazy var detailView = UIView().then {
@@ -57,6 +58,14 @@ class NewDetailViewController: UIViewController {
         $0.delegate = self
     }
     
+    private var textData: String?
+    let defaults = UserDefaults.standard
+
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        detailTextView.text = defaults.string(forKey: "textData")
+    }
     // MARK: - ViewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -165,4 +174,10 @@ extension NewDetailViewController: UITextViewDelegate {
             textView.textColor = .placeholderText
         }
     }
+    func textViewDidChange(_ textView: UITextView) {
+        
+        self.textData = detailTextView.text ?? "x"
+        self.defaults.set(self.textData, forKey: "textData")
+    }
 }
+

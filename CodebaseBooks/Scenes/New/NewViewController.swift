@@ -16,6 +16,8 @@ class NewViewController: UIViewController {
     // make Moya provder
     let service = MoyaProvider<APIService>()
     
+    private var refreshControl = UIRefreshControl()
+    
     private lazy var newTableView = UITableView().then {
         $0.separatorStyle = .none
         $0.delegate = self
@@ -35,29 +37,61 @@ class NewViewController: UIViewController {
         setupLayout()
         navigationSet()
         readBooks()
+        refreshSetting()
+       
+        
+        
     }
     
     // MARK: - Functions
+    @objc func refresh(refresh: UIRefreshControl) {
+        print("refreshTable")
+        DispatchQueue.main.asyncAfter(wallDeadline: .now() + 02) {
+            self.newTableView.reloadData()
+            self.refreshControl.endRefreshing()
+        }
+    }
+    
+    func refreshSetting() {
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        refreshControl.backgroundColor = UIColor.clear
+        self.newTableView.refreshControl = refreshControl
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        self.refresh(refresh: self.refreshControl)
+    }
+    
     private func readBooks() {
         // MoyaProvider를 통해 request를 실행합니다.
         service.request(APIService.new) { [weak self] result in
             guard let self = self else { return }
-            
+            // Result<Response, MoyaError>
+            print("result: @@@ \(result)")
             switch result {
             case .success(let response):
                 do {
+                    print("success: \(response.description)")
                     let books = try JSONDecoder().decode(BookModel.self, from: response.data)
                     self.bookList = books.books
                     DispatchQueue.main.async {
                         self.newTableView.reloadData()
                     }
                 } catch(let err) {
-                    print(err.localizedDescription)
+                    print("error : \(err)")
+                    self.alertShow()
                 }
             case .failure(let error):
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    func alertShow() {
+        let alert = UIAlertController(title: "알림", message: "API 호출 실패하였습니다.", preferredStyle: UIAlertController.Style.alert)
+        let cancelAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.cancel, handler: nil)
+        alert.addAction(cancelAction)
+        self.present(alert, animated: false)
     }
     
     private func setupLayout() {

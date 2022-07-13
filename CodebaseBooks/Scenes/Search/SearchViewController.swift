@@ -110,6 +110,7 @@ extension SearchViewController: UISearchResultsUpdating {
         /// searchbar에 입력한 텍스트
         guard let text = searchController.searchBar.text else { return }
         searchBarWord = text
+        
         noLabel.isHidden = filteredData.isEmpty ? false : true
         searchTableView.reloadData()
         searchTimer?.invalidate()
@@ -124,11 +125,13 @@ extension SearchViewController: UISearchResultsUpdating {
                 switch result {
                 case .success(let response):
                     do {
+                        print("text = \(text)")
                         let books = try JSONDecoder().decode(BookModel.self, from: response.data)
                         self.bookList = books.books
                         self.filteredData = self.bookList.filter { $0.title.localizedCaseInsensitiveContains(self.searchBarWord)}
                         
                         DispatchQueue.main.async {
+                            print("filteredData = \(self.filteredData)")
                             self.searchTableView.reloadData()
                         }
                     } catch(let err) {

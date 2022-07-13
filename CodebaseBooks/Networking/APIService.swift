@@ -13,6 +13,7 @@ enum APIService {
     case new
     case datail(isbn13: String)
     case search(query: String)
+    case fail
 }
 
 // TargetType 정의 ( 기본적인 네트워킹 레이러를 구축)
@@ -29,6 +30,7 @@ extension APIService: TargetType {
         case .new:                          return "new"
         case .datail(let isbn13):           return "books/\(isbn13)"
         case .search(let query):            return "search/\(query)"
+        case .fail:                          return "fail"
         }
     }
     
