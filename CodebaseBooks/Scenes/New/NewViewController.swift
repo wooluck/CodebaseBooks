@@ -46,7 +46,7 @@ class NewViewController: UIViewController {
     // MARK: - Functions
     @objc func refresh(refresh: UIRefreshControl) {
         print("refreshTable")
-        DispatchQueue.main.asyncAfter(wallDeadline: .now() + 02) {
+        DispatchQueue.main.async() {
             self.newTableView.reloadData()
             self.refreshControl.endRefreshing()
         }
