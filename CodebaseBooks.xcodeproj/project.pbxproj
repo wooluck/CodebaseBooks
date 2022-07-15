@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32A3EF194C1EE7A5719DD333 /* Pods_CodebaseBooks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B62DB4C7B6DE4ECB2E61AEC /* Pods_CodebaseBooks.framework */; };
 		7A38076B28747C2B0031CCFE /* Ex_UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A38076A28747C2B0031CCFE /* Ex_UIView.swift */; };
 		C37B166528766A0F00674314 /* Ex_String.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37B166428766A0F00674314 /* Ex_String.swift */; };
 		C37B16672876B6FC00674314 /* Ex_ConstraintMakerRelatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37B16662876B6FC00674314 /* Ex_ConstraintMakerRelatable.swift */; };
@@ -18,21 +19,18 @@
 		C39C4A24287426AA000A1221 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39C4A23287426AA000A1221 /* SearchViewController.swift */; };
 		C39C4A26287426B6000A1221 /* NewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39C4A25287426B6000A1221 /* NewViewController.swift */; };
 		C39C4A2828742A04000A1221 /* NewTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39C4A2728742A04000A1221 /* NewTableCell.swift */; };
-		C39C4A2B28742BFA000A1221 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = C39C4A2A28742BFA000A1221 /* Kingfisher */; };
-		C39C4A2E28742C0C000A1221 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = C39C4A2D28742C0C000A1221 /* Alamofire */; };
-		C39C4A3128742C1E000A1221 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = C39C4A3028742C1E000A1221 /* SnapKit */; };
 		C3BFD3D52877EDEF00D23CE1 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BFD3D42877EDEF00D23CE1 /* APIService.swift */; };
-		C3BFD3D82877EE8300D23CE1 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = C3BFD3D72877EE8300D23CE1 /* Moya */; };
 		C3CC6AA72875108D0045ED8C /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CC6AA62875108D0045ED8C /* BookModel.swift */; };
 		C3CC6AA92875189B0045ED8C /* NewDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CC6AA82875189B0045ED8C /* NewDetailViewController.swift */; };
 		C3CC6AAD287529350045ED8C /* BookError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CC6AAC287529350045ED8C /* BookError.swift */; };
 		C3CC6AAF2875488B0045ED8C /* SearchTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CC6AAE2875488B0045ED8C /* SearchTableCell.swift */; };
 		C3CC6AB128754A8C0045ED8C /* Ex_UIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CC6AB028754A8C0045ED8C /* Ex_UIImageView.swift */; };
-		C3CC6AB4287552E20045ED8C /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = C3CC6AB3287552E20045ED8C /* Then */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B62DB4C7B6DE4ECB2E61AEC /* Pods_CodebaseBooks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CodebaseBooks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A38076A28747C2B0031CCFE /* Ex_UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ex_UIView.swift; sourceTree = "<group>"; };
+		927DA39E4A9FFD20C10F5448 /* Pods-CodebaseBooks.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CodebaseBooks.debug.xcconfig"; path = "Target Support Files/Pods-CodebaseBooks/Pods-CodebaseBooks.debug.xcconfig"; sourceTree = "<group>"; };
 		C37B166428766A0F00674314 /* Ex_String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ex_String.swift; sourceTree = "<group>"; };
 		C37B16662876B6FC00674314 /* Ex_ConstraintMakerRelatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ex_ConstraintMakerRelatable.swift; sourceTree = "<group>"; };
 		C39C4A0928742536000A1221 /* CodebaseBooks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodebaseBooks.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -51,6 +49,7 @@
 		C3CC6AAC287529350045ED8C /* BookError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookError.swift; sourceTree = "<group>"; };
 		C3CC6AAE2875488B0045ED8C /* SearchTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableCell.swift; sourceTree = "<group>"; };
 		C3CC6AB028754A8C0045ED8C /* Ex_UIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ex_UIImageView.swift; sourceTree = "<group>"; };
+		EEC9BDB573ACAAF8579D2557 /* Pods-CodebaseBooks.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CodebaseBooks.release.xcconfig"; path = "Target Support Files/Pods-CodebaseBooks/Pods-CodebaseBooks.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,17 +57,31 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C39C4A3128742C1E000A1221 /* SnapKit in Frameworks */,
-				C39C4A2B28742BFA000A1221 /* Kingfisher in Frameworks */,
-				C39C4A2E28742C0C000A1221 /* Alamofire in Frameworks */,
-				C3BFD3D82877EE8300D23CE1 /* Moya in Frameworks */,
-				C3CC6AB4287552E20045ED8C /* Then in Frameworks */,
+				32A3EF194C1EE7A5719DD333 /* Pods_CodebaseBooks.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05B33E139562D010533734EB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				927DA39E4A9FFD20C10F5448 /* Pods-CodebaseBooks.debug.xcconfig */,
+				EEC9BDB573ACAAF8579D2557 /* Pods-CodebaseBooks.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		1368C7333F1FE2CD03B4070C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0B62DB4C7B6DE4ECB2E61AEC /* Pods_CodebaseBooks.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		7A38076928747BE60031CCFE /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -93,6 +106,8 @@
 			children = (
 				C39C4A0B28742536000A1221 /* CodebaseBooks */,
 				C39C4A0A28742536000A1221 /* Products */,
+				05B33E139562D010533734EB /* Pods */,
+				1368C7333F1FE2CD03B4070C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -189,22 +204,17 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C39C4A1D28742537000A1221 /* Build configuration list for PBXNativeTarget "CodebaseBooks" */;
 			buildPhases = (
+				FF939488CBFF800A91C12C6A /* [CP] Check Pods Manifest.lock */,
 				C39C4A0528742536000A1221 /* Sources */,
 				C39C4A0628742536000A1221 /* Frameworks */,
 				C39C4A0728742536000A1221 /* Resources */,
+				3EA899970895947DE648FA42 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = CodebaseBooks;
-			packageProductDependencies = (
-				C39C4A2A28742BFA000A1221 /* Kingfisher */,
-				C39C4A2D28742C0C000A1221 /* Alamofire */,
-				C39C4A3028742C1E000A1221 /* SnapKit */,
-				C3CC6AB3287552E20045ED8C /* Then */,
-				C3BFD3D72877EE8300D23CE1 /* Moya */,
-			);
 			productName = CodebaseBooks;
 			productReference = C39C4A0928742536000A1221 /* CodebaseBooks.app */;
 			productType = "com.apple.product-type.application";
@@ -233,13 +243,6 @@
 				Base,
 			);
 			mainGroup = C39C4A0028742536000A1221;
-			packageReferences = (
-				C39C4A2928742BFA000A1221 /* XCRemoteSwiftPackageReference "Kingfisher" */,
-				C39C4A2C28742C0C000A1221 /* XCRemoteSwiftPackageReference "Alamofire" */,
-				C39C4A2F28742C1E000A1221 /* XCRemoteSwiftPackageReference "SnapKit" */,
-				C3CC6AB2287552E20045ED8C /* XCRemoteSwiftPackageReference "Then" */,
-				C3BFD3D62877EE8300D23CE1 /* XCRemoteSwiftPackageReference "Moya" */,
-			);
 			productRefGroup = C39C4A0A28742536000A1221 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -260,6 +263,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3EA899970895947DE648FA42 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CodebaseBooks/Pods-CodebaseBooks-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CodebaseBooks/Pods-CodebaseBooks-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CodebaseBooks/Pods-CodebaseBooks-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FF939488CBFF800A91C12C6A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CodebaseBooks-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C39C4A0528742536000A1221 /* Sources */ = {
@@ -416,6 +461,7 @@
 		};
 		C39C4A1E28742537000A1221 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 927DA39E4A9FFD20C10F5448 /* Pods-CodebaseBooks.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -442,6 +488,7 @@
 		};
 		C39C4A1F28742537000A1221 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EEC9BDB573ACAAF8579D2557 /* Pods-CodebaseBooks.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -488,77 +535,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		C39C4A2928742BFA000A1221 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
-			requirement = {
-				kind = exactVersion;
-				version = 7.1.2;
-			};
-		};
-		C39C4A2C28742C0C000A1221 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
-			requirement = {
-				kind = exactVersion;
-				version = 5.5.0;
-			};
-		};
-		C39C4A2F28742C1E000A1221 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
-			requirement = {
-				kind = exactVersion;
-				version = 5.0.1;
-			};
-		};
-		C3BFD3D62877EE8300D23CE1 /* XCRemoteSwiftPackageReference "Moya" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Moya/Moya.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-		C3CC6AB2287552E20045ED8C /* XCRemoteSwiftPackageReference "Then" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/devxoul/Then.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		C39C4A2A28742BFA000A1221 /* Kingfisher */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C39C4A2928742BFA000A1221 /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
-		};
-		C39C4A2D28742C0C000A1221 /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C39C4A2C28742C0C000A1221 /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		C39C4A3028742C1E000A1221 /* SnapKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C39C4A2F28742C1E000A1221 /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = SnapKit;
-		};
-		C3BFD3D72877EE8300D23CE1 /* Moya */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C3BFD3D62877EE8300D23CE1 /* XCRemoteSwiftPackageReference "Moya" */;
-			productName = Moya;
-		};
-		C3CC6AB3287552E20045ED8C /* Then */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C3CC6AB2287552E20045ED8C /* XCRemoteSwiftPackageReference "Then" */;
-			productName = Then;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C39C4A0128742536000A1221 /* Project object */;
 }

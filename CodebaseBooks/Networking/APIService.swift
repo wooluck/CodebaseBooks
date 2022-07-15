@@ -25,6 +25,7 @@ extension APIService: TargetType {
         return url
     }
     
+    
     var path: String {
         switch self {
         case .new:                          return "new"
@@ -33,6 +34,8 @@ extension APIService: TargetType {
         case .fail:                          return "fail"
         }
     }
+    
+    
     
     var method: Moya.Method {
         switch self {

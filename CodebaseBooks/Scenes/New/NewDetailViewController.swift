@@ -9,12 +9,25 @@ import UIKit
 import Alamofire
 import Moya
 import Then
+import RxSwift
+import RxCocoa
+import SafariServices
 
 class NewDetailViewController: UIViewController {
-    var prepareBook: Book?
+    var disposeBag = DisposeBag()
     var detailBook: BookDetail?
     let service = MoyaProvider<APIService>()
     private let DATA_KEY = "Saved Data"
+    
+    
+    init(_ detailData: Book) {
+        super.init(nibName: nil, bundle: nil)
+        readBooks(data: detailData)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     
     private lazy var detailView = UIView().then {
@@ -61,17 +74,17 @@ class NewDetailViewController: UIViewController {
     private var textData: String?
     let defaults = UserDefaults.standard
 
-
+    // MARK: - viewWillAppear()
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         detailTextView.text = defaults.string(forKey: "textData")
     }
+    
     // MARK: - ViewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
         setLayoutContentView()
-        readBooks()
     }
     
     // MARK: - Functions
@@ -130,11 +143,9 @@ class NewDetailViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
-    private func readBooks() {
+    private func readBooks(data: Book) {
         // MoyaProvider를 통해 request를 실행합니다.
-        if let isbn = prepareBook?.isbn13 {
-            
-            service.request(APIService.datail(isbn13: isbn)) { [weak self] result in
+        service.request(APIService.datail(isbn13: data.isbn13)) { [weak self] result in
                 guard let self = self else { return }
                 
                 switch result {
@@ -149,6 +160,9 @@ class NewDetailViewController: UIViewController {
                         self.detailIsbn13Label.text = self.detailBook?.isbn13
                         self.detailPriceLabel.text = self.detailBook?.price
                         self.detailLinkButton.setTitle(self.detailBook?.url, for: .normal)
+                        
+                        self.bookLinkBtnTap(books)
+
                     } catch(let err) {
                         print(err.localizedDescription)
                     }
@@ -157,7 +171,15 @@ class NewDetailViewController: UIViewController {
                     print(error.localizedDescription)
                 }
             }
-        }
+    }
+    
+    private func bookLinkBtnTap(_ bookLink: BookDetail) {
+        self.detailLinkButton.rx.tap
+            .subscribe(onNext: {
+                let bookUrl = URL(string: "https://itbook.store/books/" + bookLink.isbn13)
+                let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl as! URL)
+                self.present(bookSafariView, animated: true, completion: nil)
+            }).disposed(by: self.disposeBag)
     }
 }
 

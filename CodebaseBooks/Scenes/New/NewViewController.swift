@@ -9,9 +9,12 @@ import UIKit
 import Alamofire
 import Moya
 import Then
+import RxSwift
+import RxCocoa
+import SafariServices
 
 class NewViewController: UIViewController {
-    var bookList = [Book]()
+    var disposeBag = DisposeBag()
     
     // make Moya provder
     let service = MoyaProvider<APIService>()
@@ -20,8 +23,8 @@ class NewViewController: UIViewController {
     
     private lazy var newTableView = UITableView().then {
         $0.separatorStyle = .none
-        $0.delegate = self
-        $0.dataSource = self
+        $0.rx.setDelegate(self)
+            .disposed(by: disposeBag)
         $0.register(NewTableCell.self, forCellReuseIdentifier: "NewTableCell")
     }
     
@@ -38,9 +41,7 @@ class NewViewController: UIViewController {
         navigationSet()
         readBooks()
         refreshSetting()
-       
-        
-        
+        cellClicked()
     }
     
     // MARK: - Functions
@@ -52,7 +53,7 @@ class NewViewController: UIViewController {
         }
     }
     
-    func refreshSetting() {
+    private func refreshSetting() {
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         refreshControl.backgroundColor = UIColor.clear
         self.newTableView.refreshControl = refreshControl
@@ -61,22 +62,17 @@ class NewViewController: UIViewController {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         self.refresh(refresh: self.refreshControl)
     }
-    
+
     private func readBooks() {
         // MoyaProvider를 통해 request를 실행합니다.
         service.request(APIService.new) { [weak self] result in
             guard let self = self else { return }
             // Result<Response, MoyaError>
-            print("result: @@@ \(result)")
             switch result {
             case .success(let response):
                 do {
-                    print("success: \(response.description)")
                     let books = try JSONDecoder().decode(BookModel.self, from: response.data)
-                    self.bookList = books.books
-                    DispatchQueue.main.async {
-                        self.newTableView.reloadData()
-                    }
+                    self.bindTableView(data: books.books)
                 } catch(let err) {
                     print("error : \(err)")
                     self.alertShow()
@@ -87,7 +83,20 @@ class NewViewController: UIViewController {
         }
     }
     
-    func alertShow() {
+    private func bindTableView(data: [Book]) {
+        Observable.of(data)
+            .bind(to: newTableView.rx.items(cellIdentifier: "NewTableCell", cellType: NewTableCell.self)) { row, element, cell in
+                cell.configureView(with: element)
+                cell.newLinkButton.rx.tap
+                        .subscribe(onNext: {
+                            let bookUrl = URL(string: "https://itbook.store/books/" + element.isbn13)
+                            let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl as! URL)
+                            self.present(bookSafariView, animated: true, completion: nil)
+                            })
+            }.disposed(by: disposeBag)
+    }
+
+    private func alertShow() {
         let alert = UIAlertController(title: "알림", message: "API 호출 실패하였습니다.", preferredStyle: UIAlertController.Style.alert)
         let cancelAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.cancel, handler: nil)
         alert.addAction(cancelAction)
@@ -102,10 +111,20 @@ class NewViewController: UIViewController {
         }
     }
     
-    func navigationSet() {
+    private func navigationSet() {
         navigationItem.title = "New Books"
         navigationController?.navigationBar.prefersLargeTitles = true
     }
+    
+    private func cellClicked() {
+        //tableView.rx.modelSelected : 선택된 Cell 위치의 Model 을 전달한다.
+        newTableView.rx.modelSelected(Book.self)
+            .subscribe(onNext: { [weak self] member in
+                guard let self = self else { return }
+                self.navigationController?.pushViewController(NewDetailViewController(member), animated: true)
+            }).disposed(by: disposeBag)
+    }
+    
 }
 
 // MARK: - Extension (Delegate, DataSource)
@@ -113,23 +132,12 @@ extension NewViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 280
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let newDetailVC = NewDetailViewController()
-        newDetailVC.prepareBook = self.bookList[indexPath.row]
-        navigationController?.pushViewController(newDetailVC, animated: true)
-    }
+
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let newDetailVC = NewDetailViewController()
+//        newDetailVC.prepareBook = self.bookList[indexPath.row]
+//        navigationController?.pushViewController(newDetailVC, animated: true)
+//    }
 }
 
-extension NewViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return bookList.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewTableCell", for: indexPath) as? NewTableCell else { return UITableViewCell()}
-        cell.configureView(with: bookList[indexPath.row])
-        return cell
-    }
-}
 

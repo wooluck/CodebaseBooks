@@ -8,61 +8,43 @@
 import UIKit
 import SnapKit
 import Then
+import RxSwift
+import RxCocoa
+import SafariServices
 
 class NewTableCell: UITableViewCell {
-    private lazy var newImageView = UIImageView()
+    public lazy var newImageView = UIImageView()
     
-    private lazy var newLinkButton = UIButton().then {
+    public lazy var newLinkButton = UIButton().then {
         let config = UIImage.SymbolConfiguration(pointSize: 25)
         $0.setPreferredSymbolConfiguration(config, forImageIn: .normal)
         $0.setImage(UIImage(systemName: "link.circle"), for: .normal)
     }
     
-    private lazy var newView = UIView().then {
+    public lazy var newView = UIView().then {
         $0.backgroundColor = .systemGray4
     }
     
-    private lazy var newTitleLabel = UILabel().then {
+    public lazy var newTitleLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 20, weight: .bold)
         $0.textAlignment = .center
     }
     
-    private lazy var newSubTitleLabel = UILabel().then {
+    public lazy var newSubTitleLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 18, weight: .medium)
         $0.textAlignment = .center
     }
     
-    private lazy var newIsbn13Label = UILabel().then {
+    public lazy var newIsbn13Label = UILabel().then {
         $0.font = .systemFont(ofSize: 15)
         $0.textAlignment = .center
     }
     
-    private lazy var newPriceLabel = UILabel().then {
+    public lazy var newPriceLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 16, weight: .bold)
         $0.textAlignment = .center
     }
     
-//    override var contentView: UIView {
-//        let view = UIView().then {
-//            $0.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0))
-//            $0.layer.cornerRadius = 30
-//            $0.layer.masksToBounds = true
-//            $0.backgroundColor = .systemGray5
-//        }
-//
-//        return view
-//    }
-
-    
-//    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-//        super.init(style: style, reuseIdentifier: reuseIdentifier)
-//        setupLayoutContentView()
-//        setupLayout()
-//    }
-//
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -117,6 +99,15 @@ class NewTableCell: UITableViewCell {
         contentView.layer.masksToBounds = true
         contentView.backgroundColor = .systemGray5
     }
+    
+//    private func linkBtnClicked() {
+//        newLinkButton.rx.tap
+//            .subscribe(onNext: {
+//                let bookUrl = URL(string: "https://borabong.tistory.com/")
+//                        let blogSafariView: SFSafariViewController = SFSafariViewController(url: blogUrl as! URL)
+//                        self.present(blogSafariView, animated: true, completion: nil)
+//            })
+//    }
     
     /// 데이터 가져오기
     public func configureView(with bookModel: Book) {

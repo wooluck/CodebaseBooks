@@ -8,6 +8,8 @@
 import UIKit
 import Alamofire
 import Moya
+import RxSwift
+import RxCocoa
 
 class SearchViewController: UIViewController {
     var bookList = [Book]()
@@ -47,6 +49,8 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         setupLayout()
         navigationSearch()
+        
+        
     }
     
     //MARK: - Functions
@@ -69,6 +73,8 @@ class SearchViewController: UIViewController {
         searchController.searchBar.placeholder = "검색어를 입력해보세요."
         searchController.searchResultsUpdater = self
     }
+    
+    
 }
 
 // MARK: - Extension (Delegate, DataSource)
@@ -77,11 +83,11 @@ extension SearchViewController: UITableViewDelegate {
         return 280
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let newDetailVC = NewDetailViewController()
-        newDetailVC.prepareBook = self.bookList[indexPath.row]
-        navigationController?.pushViewController(newDetailVC, animated: true)
-    }
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let newDetailVC = NewDetailViewController()
+//        newDetailVC.prepareBook = self.bookList[indexPath.row]
+//        navigationController?.pushViewController(newDetailVC, animated: true)
+//    }
 }
 
 extension SearchViewController : UITableViewDataSource {

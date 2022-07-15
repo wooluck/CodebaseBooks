@@ -8,6 +8,8 @@
 import UIKit
 import Kingfisher
 import Then
+import RxSwift
+import RxCocoa
 
 class SearchTableCell: UITableViewCell {
     var preparebook: Book?
