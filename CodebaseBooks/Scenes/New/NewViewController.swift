@@ -46,7 +46,6 @@ class NewViewController: UIViewController {
     
     // MARK: - Functions
     @objc func refresh(refresh: UIRefreshControl) {
-        print("refreshTable")
         DispatchQueue.main.async() {
             self.newTableView.reloadData()
             self.refreshControl.endRefreshing()
@@ -54,6 +53,8 @@ class NewViewController: UIViewController {
     }
     
     private func refreshSetting() {
+        
+        
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         refreshControl.backgroundColor = UIColor.clear
         self.newTableView.refreshControl = refreshControl
@@ -89,10 +90,11 @@ class NewViewController: UIViewController {
                 cell.configureView(with: element)
                 cell.newLinkButton.rx.tap
                         .subscribe(onNext: {
-                            let bookUrl = URL(string: "https://itbook.store/books/" + element.isbn13)
-                            let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl as! URL)
+                            guard let bookUrl = URL(string: "https://itbook.store/books/" + element.isbn13) else { return }
+
+                            let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl)
                             self.present(bookSafariView, animated: true, completion: nil)
-                            })
+                        }).disposed(by: self.disposeBag)
             }.disposed(by: disposeBag)
     }
 

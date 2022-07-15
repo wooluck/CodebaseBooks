@@ -100,15 +100,6 @@ class NewTableCell: UITableViewCell {
         contentView.backgroundColor = .systemGray5
     }
     
-//    private func linkBtnClicked() {
-//        newLinkButton.rx.tap
-//            .subscribe(onNext: {
-//                let bookUrl = URL(string: "https://borabong.tistory.com/")
-//                        let blogSafariView: SFSafariViewController = SFSafariViewController(url: blogUrl as! URL)
-//                        self.present(blogSafariView, animated: true, completion: nil)
-//            })
-//    }
-    
     /// 데이터 가져오기
     public func configureView(with bookModel: Book) {
         // 이미지 불러오기

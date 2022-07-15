@@ -18,6 +18,7 @@ enum APIService {
 
 // TargetType 정의 ( 기본적인 네트워킹 레이러를 구축)
 extension APIService: TargetType {
+    
     var baseURL: URL {
         guard let url = URL(string: "https://api.itbook.store/1.0/") else {
             fatalError()

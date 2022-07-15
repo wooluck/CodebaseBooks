@@ -10,8 +10,10 @@ import Alamofire
 import Moya
 import RxSwift
 import RxCocoa
+import SafariServices
 
 class SearchViewController: UIViewController {
+    var disposeBag = DisposeBag()
     var bookList = [Book]()
     var filteredData = [Book]()
     var searchBarWord = ""
@@ -28,8 +30,9 @@ class SearchViewController: UIViewController {
     
     private lazy var searchTableView = UITableView().then {
         $0.separatorStyle = .none
-        $0.delegate = self
-        $0.dataSource = self
+
+        $0.rx.setDelegate(self)
+            .disposed(by: disposeBag)
         $0.register(SearchTableCell.self, forCellReuseIdentifier: "SearchTableCell")
     }
     
@@ -49,8 +52,8 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         setupLayout()
         navigationSearch()
-        
-        
+        writeInSeachBar()
+        cellClicked()
     }
     
     //MARK: - Functions
@@ -71,7 +74,67 @@ class SearchViewController: UIViewController {
         navigationItem.title = "Search Books"
         navigationController?.navigationBar.prefersLargeTitles = true
         searchController.searchBar.placeholder = "검색어를 입력해보세요."
-        searchController.searchResultsUpdater = self
+    }
+    
+    private func writeInSeachBar() {
+        self.noLabel.isHidden = self.filteredData.isEmpty ? false : true
+        searchController.searchBar.rx.text
+            .orEmpty
+            .debounce(.seconds(1), scheduler: MainScheduler.instance)
+            .subscribe(onNext: { text in
+                self.service.request(APIService.search(query: text)) { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let response):
+                        do {
+                            let books = try JSONDecoder().decode(BookModel.self, from: response.data)
+                            self.bookList = books.books
+                            self.filteredData = self.bookList.filter { $0.title.localizedCaseInsensitiveContains(text)}
+                            self.bindTableView(self.filteredData)
+
+                            DispatchQueue.main.async {
+                                self.searchTableView.reloadData()
+                            }
+                        } catch(let err) {
+                            print(err.localizedDescription)
+                        }
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
+            }).disposed(by: disposeBag)
+    }
+    
+    private func bindTableView(_ data: [Book]) {
+        Observable.of(data)
+            .bind(to: self.searchTableView.rx.items(cellIdentifier: "SearchTableCell", cellType: SearchTableCell.self)) { row, element, cell in
+                cell.configureView(with: element)
+                if self.isFiltering {
+                    if self.filteredData.count != 0  {
+                        cell.configureView(with: self.filteredData[row])
+                        self.noLabel.isHidden = true
+                    }
+                } else {
+                    cell.configureView(with: element)
+                    self.noLabel.isHidden = true
+                }
+                cell.searchLinkButton.rx.tap
+                        .subscribe(onNext: {
+                            guard let bookUrl = URL(string: "https://itbook.store/books/" + element.isbn13) else { return }
+                            let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl)
+                            self.present(bookSafariView, animated: true, completion: nil)
+                            }).disposed(by: self.disposeBag)
+            }.disposed(by: self.disposeBag)
+        
+        
+    }
+    
+    private func cellClicked() {
+        searchTableView.rx.modelSelected(Book.self)
+            .subscribe(onNext: { [weak self] member in
+                guard let self = self else { return }
+                self.navigationController?.pushViewController(NewDetailViewController(member), animated: true)
+            }).disposed(by: disposeBag)
     }
     
     
@@ -82,73 +145,7 @@ extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 280
     }
-    
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let newDetailVC = NewDetailViewController()
-//        newDetailVC.prepareBook = self.bookList[indexPath.row]
-//        navigationController?.pushViewController(newDetailVC, animated: true)
-//    }
 }
 
-extension SearchViewController : UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.isFiltering ? self.filteredData.count : self.bookList.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "SearchTableCell", for: indexPath) as? SearchTableCell else { return UITableViewCell()}
-        
-        if self.isFiltering {
-            if filteredData.count != 0  {
-                cell.configureView(with: filteredData[indexPath.row])
-                noLabel.isHidden = true
-            }
-        } else {
-            cell.configureView(with: bookList[indexPath.row])
-            noLabel.isHidden = true
-        }
-        return cell
-    }
-}
 
-extension SearchViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        /// searchbar에 입력한 텍스트
-        guard let text = searchController.searchBar.text else { return }
-        searchBarWord = text
-        
-        noLabel.isHidden = filteredData.isEmpty ? false : true
-        searchTableView.reloadData()
-        searchTimer?.invalidate()
-        
-        searchTimer = Timer.scheduledTimer(withTimeInterval: 0, repeats: false, block: { [weak self] timer in            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-            guard let `self` = self else { return }
-            
-            // MoyaProvider를 통해 request를 실행합니다.
-            self.service.request(APIService.search(query: self.searchBarWord)) { [weak self] result in
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let response):
-                    do {
-                        print("text = \(text)")
-                        let books = try JSONDecoder().decode(BookModel.self, from: response.data)
-                        self.bookList = books.books
-                        self.filteredData = self.bookList.filter { $0.title.localizedCaseInsensitiveContains(self.searchBarWord)}
-                        
-                        DispatchQueue.main.async {
-                            print("filteredData = \(self.filteredData)")
-                            self.searchTableView.reloadData()
-                        }
-                    } catch(let err) {
-                        print(err.localizedDescription)
-                    }
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }
-        }
-        })
-    }
-}
 

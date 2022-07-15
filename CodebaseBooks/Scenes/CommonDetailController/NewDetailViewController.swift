@@ -176,8 +176,10 @@ class NewDetailViewController: UIViewController {
     private func bookLinkBtnTap(_ bookLink: BookDetail) {
         self.detailLinkButton.rx.tap
             .subscribe(onNext: {
-                let bookUrl = URL(string: "https://itbook.store/books/" + bookLink.isbn13)
-                let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl as! URL)
+                
+                guard let bookUrl = URL(string: "https://itbook.store/books/" + bookLink.isbn13) else { return }
+//                let bookUrl = URL(string: "https://itbook.store/books22/" + bookLink.isbn13)
+                let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl )
                 self.present(bookSafariView, animated: true, completion: nil)
             }).disposed(by: self.disposeBag)
     }

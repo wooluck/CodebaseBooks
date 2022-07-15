@@ -70,7 +70,6 @@
 				927DA39E4A9FFD20C10F5448 /* Pods-CodebaseBooks.debug.xcconfig */,
 				EEC9BDB573ACAAF8579D2557 /* Pods-CodebaseBooks.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -99,6 +98,14 @@
 				C3CC6AAC287529350045ED8C /* BookError.swift */,
 			);
 			path = Error;
+			sourceTree = "<group>";
+		};
+		C3894F65288137F800B0DA5A /* CommonDetailController */ = {
+			isa = PBXGroup;
+			children = (
+				C3CC6AA82875189B0045ED8C /* NewDetailViewController.swift */,
+			);
+			path = CommonDetailController;
 			sourceTree = "<group>";
 		};
 		C39C4A0028742536000A1221 = {
@@ -135,6 +142,7 @@
 		C39C4A20287425CE000A1221 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				C3894F65288137F800B0DA5A /* CommonDetailController */,
 				C3BFD3DA2878150600D23CE1 /* TabBar */,
 				C39C4A21287425DA000A1221 /* New */,
 				C39C4A22287425E1000A1221 /* Search */,
@@ -147,7 +155,6 @@
 			children = (
 				C39C4A25287426B6000A1221 /* NewViewController.swift */,
 				C39C4A2728742A04000A1221 /* NewTableCell.swift */,
-				C3CC6AA82875189B0045ED8C /* NewDetailViewController.swift */,
 			);
 			path = New;
 			sourceTree = "<group>";
