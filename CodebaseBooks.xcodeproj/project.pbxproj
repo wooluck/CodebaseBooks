@@ -132,8 +132,8 @@
 				C3BFD3D9287813EA00D23CE1 /* SupportingFile */,
 				C3BFD3D32877EDE000D23CE1 /* Networking */,
 				C37B16632876605100674314 /* Error */,
-				C3CC6AA5287510780045ED8C /* Model */,
 				7A38076928747BE60031CCFE /* Extensions */,
+				C3CC6AA5287510780045ED8C /* Model */,
 				C39C4A20287425CE000A1221 /* Scenes */,
 			);
 			path = CodebaseBooks;

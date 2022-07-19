@@ -45,23 +45,27 @@ class NewViewController: UIViewController {
     }
     
     // MARK: - Functions
-    @objc func refresh(refresh: UIRefreshControl) {
-        DispatchQueue.main.async() {
-            self.newTableView.reloadData()
-            self.refreshControl.endRefreshing()
-        }
-    }
     
+    func setupBindings() {
+        
+    }
     private func refreshSetting() {
-        
-        
-        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        refreshControl.endRefreshing() // 초기화 - refresh 종료
         refreshControl.backgroundColor = UIColor.clear
-        self.newTableView.refreshControl = refreshControl
-    }
-    
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        self.refresh(refresh: self.refreshControl)
+        newTableView.refreshControl = refreshControl
+        
+        let refreshLoading = PublishRelay<Bool>()
+        
+        refreshControl.rx.controlEvent(.valueChanged)
+            .bind(onNext: { _ in
+                DispatchQueue.main.asyncAfter(wallDeadline: .now() + 1) {
+                            refreshLoading.accept(false) // viewModel에서 dataSource업데이트 끝난 경우
+                        }
+            }).disposed(by: disposeBag)
+        
+        refreshLoading
+            .bind(to: refreshControl.rx.isRefreshing)
+            .disposed(by: disposeBag)
     }
 
     private func readBooks() {
@@ -134,12 +138,6 @@ extension NewViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 280
     }
-
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let newDetailVC = NewDetailViewController()
-//        newDetailVC.prepareBook = self.bookList[indexPath.row]
-//        navigationController?.pushViewController(newDetailVC, animated: true)
-//    }
 }
 
 

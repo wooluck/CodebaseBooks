@@ -17,7 +17,6 @@ class SearchViewController: UIViewController {
     var bookList = [Book]()
     var filteredData = [Book]()
     var searchBarWord = ""
-    var searchTimer: Timer?
     let searchController = UISearchController(searchResultsController: nil)
     let service = MoyaProvider<APIService>()
     
@@ -30,9 +29,9 @@ class SearchViewController: UIViewController {
     
     private lazy var searchTableView = UITableView().then {
         $0.separatorStyle = .none
-
         $0.rx.setDelegate(self)
             .disposed(by: disposeBag)
+        
         $0.register(SearchTableCell.self, forCellReuseIdentifier: "SearchTableCell")
     }
     
@@ -50,10 +49,11 @@ class SearchViewController: UIViewController {
     // MARK: - ViewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupLayout()
         navigationSearch()
         writeInSeachBar()
         cellClicked()
+        setupLayout()
+        
     }
     
     //MARK: - Functions
@@ -71,8 +71,9 @@ class SearchViewController: UIViewController {
     
     private func navigationSearch() {
         navigationItem.searchController = searchController
-        navigationItem.title = "Search Books"
+        navigationItem.title = "Search Book"
         navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.backgroundColor = .clear
         searchController.searchBar.placeholder = "검색어를 입력해보세요."
     }
     
@@ -106,14 +107,20 @@ class SearchViewController: UIViewController {
     }
     
     private func bindTableView(_ data: [Book]) {
+        self.searchTableView.dataSource = nil
         Observable.of(data)
+        
             .bind(to: self.searchTableView.rx.items(cellIdentifier: "SearchTableCell", cellType: SearchTableCell.self)) { row, element, cell in
                 cell.configureView(with: element)
+                
                 if self.isFiltering {
                     if self.filteredData.count != 0  {
                         cell.configureView(with: self.filteredData[row])
                         self.noLabel.isHidden = true
                     }
+//                    else {
+//                        self.noLabel.isHidden = false
+//                    }
                 } else {
                     cell.configureView(with: element)
                     self.noLabel.isHidden = true
@@ -146,6 +153,3 @@ extension SearchViewController: UITableViewDelegate {
         return 280
     }
 }
-
-
-
