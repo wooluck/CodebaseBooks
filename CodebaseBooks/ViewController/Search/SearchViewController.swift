@@ -19,14 +19,14 @@ class SearchViewController: UIViewController {
     var searchBarWord = ""
     let searchController = UISearchController(searchResultsController: nil)
     let service = MoyaProvider<APIService>()
-//    let isRxFiltering = PublishSubject<Bool>()
+    let isRxFiltering = PublishSubject<Bool>()
     
-    private var isFiltering: Bool {
-        let searchController = navigationItem.searchController
-        let isActive = searchController?.isActive ?? false
-        let isSearchBarHasText = searchController?.searchBar.text?.isEmpty == false
-        return isActive && isSearchBarHasText
-    }
+//    private var isFiltering: Bool {
+//        let searchController = navigationItem.searchController
+//        let isActive = searchController?.isActive ?? false
+//        let isSearchBarHasText = searchController?.searchBar.text?.isEmpty == false
+//        return isActive && isSearchBarHasText
+//    }
     
     private lazy var searchTableView = UITableView().then {
         $0.separatorStyle = .none
@@ -54,8 +54,18 @@ class SearchViewController: UIViewController {
         setupLayout()
         
         
-//        let isRxFiltering = PublishSubject<Bool>()
+//        let isRxFiltering = PublishRelay<Bool>()
 //        isRxFiltering
+//            .bind(onNext: {_ in
+//                if self.searchController.isActive && ((self.searchController.searchBar.text?.isEmpty) != nil) {
+//                    self.isRxFiltering.onNext(true)
+//
+//                } else {
+//                    self.isRxFiltering.onNext(false)
+//                }
+//            }).disposed(by: disposeBag)
+        
+        
 //            . subscribe {
 //                if self.searchController.isActive && ((self.searchController.searchBar.text?.isEmpty) != nil) {
 //                    self.isRxFiltering.onNext(true)
@@ -113,6 +123,8 @@ class SearchViewController: UIViewController {
                             let books = try JSONDecoder().decode(BookModel.self, from: response.data)
                             self.bookList = books.books
                             self.filteredData = self.bookList.filter { $0.title.localizedCaseInsensitiveContains(text)}
+                            print("filteredData, noLabel -->> \(self.filteredData) || \(self.noLabel.isHidden)")
+                            
                             self.bindTableView(self.filteredData)
                         } catch(let err) {
                             print(err.localizedDescription)
@@ -128,17 +140,116 @@ class SearchViewController: UIViewController {
         self.searchTableView.dataSource = nil
         Observable.of(data)
             .bind(to: self.searchTableView.rx.items(cellIdentifier: "SearchTableCell", cellType: SearchTableCell.self)) { row, element, cell in
-                cell.configureView(with: element)
                 
-                if self.isFiltering {
-                    if self.filteredData.count != 0  {
-                        cell.configureView(with: self.filteredData[row])
-                        self.noLabel.isHidden = true
-                    }
-                } else {
-                    cell.configureView(with: element)
-                    self.noLabel.isHidden = true
-                }
+                self.isRxFiltering
+                    .bind(onNext: {_ in
+                        if self.searchController.isActive && ((self.searchController.searchBar.text?.isEmpty) != nil) {
+                            self.isRxFiltering.onNext(true)
+                            print("isRxFiltering ---> \(self.isRxFiltering.onNext)")
+                            cell.configureView(with: self.filteredData[row])
+                            self.noLabel.isHidden = false
+                            
+                        } else {
+                            self.isRxFiltering.onNext(false)
+                            cell.configureView(with: element)
+                            self.noLabel.isHidden = true
+                        }
+                    }).disposed(by: self.disposeBag)
+                
+//                cell.configureView(with: element)
+                print("element : ->>>> \(element)")
+                
+//                let ps = PublishSubject<Bool>()
+//                ps.onNext( {
+//
+//                })
+                
+//                    ps.bind(onNext: { _ in
+//                    if self.searchController.isActive && ((self.searchController.searchBar.text?.isEmpty) != nil) {
+//                        cell.configureView(with: self.filteredData[row])
+//                        self.noLabel.isHidden = true
+//                    } else {
+//                        cell.configureView(with: element)
+//                        self.noLabel.isHidden = true
+//                    }
+//                }).disposed(by: self.disposeBag)
+                
+//                Observable<Bool>.create { bool in
+//                    // 검색을 시작하면,
+//                    if self.searchController.isActive && ((self.searchController.searchBar.text?.isEmpty) != nil) {
+//                        bool.onNext(true)
+//                    } else {
+//                        bool.onNext(false)
+//                    }
+//                    return Disposables.create()
+//                    // 이제 데이터변화를 감지하며 실행한다.
+//                }.subscribe(onNext: { bool in
+//                    // 프린트문이 한번밖에 안찍힌다. 옵저버는 계속 실시간으로 지켜보는거 아닌가 ?
+//                    print("onNext bool --> \(bool)")
+//                    if bool == true {
+//                        cell.configureView(with: self.filteredData[row])
+//                        self.noLabel.isHidden = true
+//                    } else if bool == false {
+//                        cell.configureView(with: element)
+//                        self.noLabel.isHidden = true
+//                    }
+//                }).disposed(by: self.disposeBag)
+                
+                
+//                self.isRxFiltering
+//                    .bind(onNext: {_ in
+//                        if self.searchController.isActive && ((self.searchController.searchBar.text?.isEmpty) != nil) {
+//                            self.isRxFiltering.onNext(true)
+//                            print("isRxFiltering ---> \(self.isRxFiltering.onNext)")
+//                            cell.configureView(with: self.filteredData[row])
+//                            self.noLabel.isHidden = false
+//
+//                        } else {
+//                            self.isRxFiltering.onNext(false)
+//                            cell.configureView(with: element)
+//                            self.noLabel.isHidden = true
+//                        }
+//                    }).disposed(by: self.disposeBag)
+                
+                
+                
+//                self.isRxFiltering
+//                    .bind(onNext: {_ in
+//                        if self.searchController.isActive && ((self.searchController.searchBar.text?.isEmpty) != nil) {
+//                            self.isRxFiltering.onNext(true)
+//                            print("isRxFiltering ---> \(self.isRxFiltering.onNext)")
+//                            cell.configureView(with: self.filteredData[row])
+//                            self.noLabel.isHidden = false
+//
+//                        } else {
+//                            self.isRxFiltering.onNext(false)
+//                            cell.configureView(with: element)
+//                            self.noLabel.isHidden = true
+//                        }
+//                    }).disposed(by: self.disposeBag)
+//
+//                self.isRxFiltering
+//                    .onNext(<#T##element: Bool##Bool#>)
+//                    if self.filteredData.count != 0  {
+//                        cell.configureView(with: self.filteredData[row])
+//                        self.noLabel.isHidden = true
+//                    }
+//                } else {
+//                    cell.configureView(with: element)
+//                    self.noLabel.isHidden = true
+//                }
+                
+                
+                
+//                if self.isRxFiltering  {
+//                    if self.filteredData.count != 0  {
+//                        cell.configureView(with: self.filteredData[row])
+//                        self.noLabel.isHidden = true
+//                    }
+//                } else {
+//                    cell.configureView(with: element)
+//                    self.noLabel.isHidden = true
+//                }
                 cell.searchLinkButton.rx.tap
                     .subscribe(onNext: {
                         let safari = Safari()

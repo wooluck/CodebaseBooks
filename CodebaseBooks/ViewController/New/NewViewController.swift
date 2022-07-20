@@ -46,15 +46,16 @@ class NewViewController: UIViewController {
     // MARK: - Functions
     private func refreshSetting() {
         refreshControl.endRefreshing() // 초기화 - refresh 종료
-        refreshControl.backgroundColor = UIColor.clear
+//        refreshControl.backgroundColor = UIColor.clear
         newTableView.refreshControl = refreshControl
         
         let refreshLoading = PublishRelay<Bool>()
         refreshControl.rx.controlEvent(.valueChanged)
             .observe(on: MainScheduler.instance)
             .bind(onNext: {
+                self.newTableView.dataSource = nil
                 self.readBooks()
-//                    refreshLoading.accept(false)
+                refreshLoading.accept(false)
             }).disposed(by: disposeBag)
         
         refreshLoading

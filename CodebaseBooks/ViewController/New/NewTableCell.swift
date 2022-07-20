@@ -46,7 +46,6 @@ class NewTableCell: UITableViewCell {
         $0.textAlignment = .center
     }
     
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         setupLayoutContentView()
@@ -115,7 +114,6 @@ class NewTableCell: UITableViewCell {
         newSubTitleLabel.text = bookModel.subtitle
         newIsbn13Label.text = bookModel.isbn13
         newPriceLabel.text = bookModel.price.USDToKRW()
-        selectionStyle = .none
     }
 }
 
