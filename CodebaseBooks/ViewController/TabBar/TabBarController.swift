@@ -10,27 +10,12 @@ import UIKit
 class TabBarController: UITabBarController {
 
     private lazy var newViewController: UIViewController = {
-        let viewController = UINavigationController(rootViewController: NewViewController())
-        let tabBarItem = UITabBarItem(
-            title: "New",
-            image: UIImage(systemName: "book"),
-            tag: 0
-        )
-        viewController.tabBarItem = tabBarItem
-
-        return viewController
+        totalTabBar(NewViewController(), title: "New", image: "book", tag: 0)
     }()
 
     private lazy var searchViewController: UIViewController = {
-        let viewController = UINavigationController(rootViewController: SearchViewController())
-        let tabBarItem = UITabBarItem(
-            title: "Search",
-            image: UIImage(systemName: "magnifyingglass"),
-            tag: 1
-        )
-        viewController.tabBarItem = tabBarItem
-
-        return viewController
+        
+        totalTabBar(SearchViewController(), title: "Search", image: "magnifyingglass", tag: 1)
     }()
 
     override func viewDidLoad() {
@@ -38,6 +23,20 @@ class TabBarController: UITabBarController {
 
         viewControllers = [newViewController, searchViewController]
     }
+
+    private func totalTabBar(_ vc: UIViewController, title: String, image: String, tag: Int) -> UINavigationController {
+        let className = vc
+        let viewController = UINavigationController(rootViewController: className)
+        let tabBarItem = UITabBarItem(
+            title: "\(title)",
+            image: UIImage(systemName: "\(image)"),
+            tag: tag
+        )
+        viewController.tabBarItem = tabBarItem
+
+        return viewController
+    }
+    
 
 
 }

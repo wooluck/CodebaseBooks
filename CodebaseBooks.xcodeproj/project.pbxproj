@@ -149,7 +149,6 @@
 				C3BFD3D32877EDE000D23CE1 /* Networking */,
 				C37B16632876605100674314 /* Error */,
 				7A38076928747BE60031CCFE /* Extensions */,
-				C3CC6AA5287510780045ED8C /* Model */,
 				C39C4A20287425CE000A1221 /* ViewController */,
 				C392DC572886A9FC00F7B851 /* ViewModel */,
 			);
@@ -159,6 +158,7 @@
 		C39C4A20287425CE000A1221 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				C3CC6AA5287510780045ED8C /* Model */,
 				C3BFD3DA2878150600D23CE1 /* TabBar */,
 				C3894F65288137F800B0DA5A /* CommonDetailController */,
 				C39C4A21287425DA000A1221 /* New */,
