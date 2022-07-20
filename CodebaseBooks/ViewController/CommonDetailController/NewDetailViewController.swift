@@ -18,7 +18,8 @@ class NewDetailViewController: UIViewController {
     var detailBook: BookDetail?
     let service = MoyaProvider<APIService>()
     private let DATA_KEY = "Saved Data"
-    
+    private var textData: String?
+    let defaults = UserDefaults.standard
     
     init(_ detailData: Book) {
         super.init(nibName: nil, bundle: nil)
@@ -28,7 +29,6 @@ class NewDetailViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     
     private lazy var detailView = UIView().then {
         $0.backgroundColor = .systemGray5
@@ -70,9 +70,6 @@ class NewDetailViewController: UIViewController {
         $0.layer.borderWidth = 1
         $0.delegate = self
     }
-    
-    private var textData: String?
-    let defaults = UserDefaults.standard
 
     // MARK: - viewWillAppear()
     override func viewWillAppear(_ animated: Bool) {
@@ -176,16 +173,14 @@ class NewDetailViewController: UIViewController {
     private func bookLinkBtnTap(_ bookLink: BookDetail) {
         self.detailLinkButton.rx.tap
             .subscribe(onNext: {
-                
                 guard let bookUrl = URL(string: "https://itbook.store/books/" + bookLink.isbn13) else { return }
-//                let bookUrl = URL(string: "https://itbook.store/books22/" + bookLink.isbn13)
                 let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl )
                 self.present(bookSafariView, animated: true, completion: nil)
             }).disposed(by: self.disposeBag)
     }
 }
 
-// MARK: - Extension (Delegate, DataSource)
+// MARK: - Extension (Delegate, DataSource) - RxSwift 바꿀준비
 extension NewDetailViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         guard textView.textColor == .placeholderText else { return }
@@ -199,7 +194,6 @@ extension NewDetailViewController: UITextViewDelegate {
         }
     }
     func textViewDidChange(_ textView: UITextView) {
-        
         self.textData = detailTextView.text ?? "x"
         self.defaults.set(self.textData, forKey: "textData")
     }

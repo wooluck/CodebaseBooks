@@ -29,10 +29,8 @@ class SearchViewController: UIViewController {
     
     private lazy var searchTableView = UITableView().then {
         $0.separatorStyle = .none
-        $0.rx.setDelegate(self)
-            .disposed(by: disposeBag)
-        
         $0.register(SearchTableCell.self, forCellReuseIdentifier: "SearchTableCell")
+        $0.rowHeight = 280
     }
     
     private lazy var noLabel = UILabel().then {
@@ -53,7 +51,6 @@ class SearchViewController: UIViewController {
         writeInSeachBar()
         cellClicked()
         setupLayout()
-        
     }
     
     //MARK: - Functions
@@ -92,7 +89,7 @@ class SearchViewController: UIViewController {
                             self.bookList = books.books
                             self.filteredData = self.bookList.filter { $0.title.localizedCaseInsensitiveContains(text)}
                             self.bindTableView(self.filteredData)
-
+                            
                             DispatchQueue.main.async {
                                 self.searchTableView.reloadData()
                             }
@@ -118,22 +115,17 @@ class SearchViewController: UIViewController {
                         cell.configureView(with: self.filteredData[row])
                         self.noLabel.isHidden = true
                     }
-//                    else {
-//                        self.noLabel.isHidden = false
-//                    }
                 } else {
                     cell.configureView(with: element)
                     self.noLabel.isHidden = true
                 }
                 cell.searchLinkButton.rx.tap
-                        .subscribe(onNext: {
-                            guard let bookUrl = URL(string: "https://itbook.store/books/" + element.isbn13) else { return }
-                            let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl)
-                            self.present(bookSafariView, animated: true, completion: nil)
-                            }).disposed(by: self.disposeBag)
+                    .subscribe(onNext: {
+                        guard let bookUrl = URL(string: "https://itbook.store/books/" + element.isbn13) else { return }
+                        let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl)
+                        self.present(bookSafariView, animated: true, completion: nil)
+                    }).disposed(by: self.disposeBag)
             }.disposed(by: self.disposeBag)
-        
-        
     }
     
     private func cellClicked() {
@@ -142,14 +134,5 @@ class SearchViewController: UIViewController {
                 guard let self = self else { return }
                 self.navigationController?.pushViewController(NewDetailViewController(member), animated: true)
             }).disposed(by: disposeBag)
-    }
-    
-    
-}
-
-// MARK: - Extension (Delegate, DataSource)
-extension SearchViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 280
     }
 }
