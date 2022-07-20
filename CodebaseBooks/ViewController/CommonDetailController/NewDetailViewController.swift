@@ -15,7 +15,6 @@ import SafariServices
 
 class NewDetailViewController: UIViewController {
     var disposeBag = DisposeBag()
-    var detailBook: BookDetail?
     let service = MoyaProvider<APIService>()
     private let DATA_KEY = "Saved Data"
     private var textData: String?
@@ -24,6 +23,7 @@ class NewDetailViewController: UIViewController {
     init(_ detailData: Book) {
         super.init(nibName: nil, bundle: nil)
         readBooks(data: detailData)
+        linkButtonClicked(data: detailData)
     }
     
     required init?(coder: NSCoder) {
@@ -64,13 +64,13 @@ class NewDetailViewController: UIViewController {
     private lazy var detailTextView = UITextView().then {
         $0.font = .systemFont(ofSize: 20, weight: .medium)
         $0.text = "내용을 입력하세요."
-        $0.textColor = .placeholderText
+        
         $0.layer.cornerRadius = 10
         $0.layer.borderColor = UIColor.systemGray2.cgColor
         $0.layer.borderWidth = 1
-        $0.delegate = self
+        //        $0.delegate = self
     }
-
+    
     // MARK: - viewWillAppear()
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -82,11 +82,46 @@ class NewDetailViewController: UIViewController {
         super.viewDidLoad()
         setupLayout()
         setLayoutContentView()
+        
+        // MARK: (Test)
+        detailTextView.rx.didChange
+            .subscribe(onNext : {
+                self.textData = self.detailTextView.text ?? "no Data in textData"
+                self.defaults.set(self.textData, forKey: "textData")
+            }).disposed(by: disposeBag)
+        
     }
     
     // MARK: - Functions
+    private func setLayoutContentView() {
+        tabBarController?.tabBar.isHidden = true
+        view.backgroundColor = .white
+        navigationItem.title = "Detail Book"
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    private func readBooks(data: Book) {
+        guard let imageURL = URL(string: data.image) else { return }
+                    self.detailImageView.load(url: imageURL)
+                    self.detailTitleLabel.text = data.title
+                    self.detailSubTitleLabel.text = data.subtitle
+                    self.detailIsbn13Label.text = data.isbn13
+                    self.detailPriceLabel.text = data.price
+                    self.detailLinkButton.setTitle(data.url, for: .normal)
+    }
+    private func linkButtonClicked(data: Book) {
+        detailLinkButton.rx.tap
+            .subscribe(onNext: {
+                let isbn13 = data.isbn13 
+//                guard let bookUrl = URL(string: "https://itbook.store/books/" + isbn13 ) else { return }
+//                let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl )
+                let safari = Safari()
+                self.present(safari.safari(data: data), animated: true, completion: nil)
+            }).disposed(by: self.disposeBag)
+    }
+    
+    
     private func setupLayout() {
-        
         view.addsubViews([detailView, detailTitleLabel, detailSubTitleLabel, detailIsbn13Label, detailPriceLabel, detailLinkButton, detailSeperateView, detailTextView])
         detailView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
@@ -131,71 +166,6 @@ class NewDetailViewController: UIViewController {
             $0.bottom.equalToSuperview().inset(20)
             $0.leading.trailing.equalToSuperview().inset(30)
         }
-    }
-    
-    private func setLayoutContentView() {
-        tabBarController?.tabBar.isHidden = true
-        view.backgroundColor = .white
-        navigationItem.title = "Detail Book"
-        navigationController?.navigationBar.prefersLargeTitles = true
-    }
-    
-    private func readBooks(data: Book) {
-        // MoyaProvider를 통해 request를 실행합니다.
-        service.request(APIService.datail(isbn13: data.isbn13)) { [weak self] result in
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let response):
-                    do {
-                        let books = try JSONDecoder().decode(BookDetail.self, from: response.data)
-                        self.detailBook = books
-                        let imageURL = URL(string: self.detailBook?.image ?? "nil")
-                        self.detailImageView.load(url: imageURL!)
-                        self.detailTitleLabel.text = self.detailBook?.title
-                        self.detailSubTitleLabel.text = self.detailBook?.subtitle
-                        self.detailIsbn13Label.text = self.detailBook?.isbn13
-                        self.detailPriceLabel.text = self.detailBook?.price
-                        self.detailLinkButton.setTitle(self.detailBook?.url, for: .normal)
-                        
-                        self.bookLinkBtnTap(books)
-
-                    } catch(let err) {
-                        print(err.localizedDescription)
-                    }
-                    
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }
-    }
-    
-    private func bookLinkBtnTap(_ bookLink: BookDetail) {
-        self.detailLinkButton.rx.tap
-            .subscribe(onNext: {
-                guard let bookUrl = URL(string: "https://itbook.store/books/" + bookLink.isbn13) else { return }
-                let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl )
-                self.present(bookSafariView, animated: true, completion: nil)
-            }).disposed(by: self.disposeBag)
-    }
-}
-
-// MARK: - Extension (Delegate, DataSource) - RxSwift 바꿀준비
-extension NewDetailViewController: UITextViewDelegate {
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        guard textView.textColor == .placeholderText else { return }
-        textView.textColor = .label
-        textView.text = nil
-    }
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.isEmpty {
-            textView.text = "내용을 입력하세요."
-            textView.textColor = .placeholderText
-        }
-    }
-    func textViewDidChange(_ textView: UITextView) {
-        self.textData = detailTextView.text ?? "x"
-        self.defaults.set(self.textData, forKey: "textData")
     }
 }
 

@@ -40,7 +40,7 @@ class NewViewController: UIViewController {
         navigationSet()
         readBooks()
         refreshSetting()
-        cellClicked()
+        bindData()
     }
     
     // MARK: - Functions
@@ -87,10 +87,8 @@ class NewViewController: UIViewController {
                 cell.configureView(with: element)
                 cell.newLinkButton.rx.tap
                     .subscribe(onNext: {
-                        guard let bookUrl = URL(string: "https://itbook.store/books/" + element.isbn13) else { return }
-                        
-                        let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl)
-                        self.present(bookSafariView, animated: true, completion: nil)
+                        let safari = Safari()
+                        self.present(safari.safari(data: element), animated: true, completion: nil)
                     }).disposed(by: self.disposeBag)
             }.disposed(by: disposeBag)
     }
@@ -115,7 +113,7 @@ class NewViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
-    private func cellClicked() {
+    private func bindData() {
         //tableView.rx.modelSelected : 선택된 Cell 위치의 Model 을 전달한다.
         newTableView.rx.modelSelected(Book.self)
             .subscribe(onNext: { [weak self] member in

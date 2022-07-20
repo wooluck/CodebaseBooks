@@ -12,6 +12,7 @@ import RxSwift
 import RxCocoa
 
 class SearchTableCell: UITableViewCell {
+    
     var preparebook: Book?
     
     private var searchImageView = UIImageView()

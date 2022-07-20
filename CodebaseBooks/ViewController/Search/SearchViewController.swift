@@ -19,8 +19,9 @@ class SearchViewController: UIViewController {
     var searchBarWord = ""
     let searchController = UISearchController(searchResultsController: nil)
     let service = MoyaProvider<APIService>()
+//    let isRxFiltering = PublishSubject<Bool>()
     
-    var isFiltering: Bool {
+    private var isFiltering: Bool {
         let searchController = navigationItem.searchController
         let isActive = searchController?.isActive ?? false
         let isSearchBarHasText = searchController?.searchBar.text?.isEmpty == false
@@ -49,11 +50,35 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         navigationSearch()
         writeInSeachBar()
-        cellClicked()
+        bindData()
         setupLayout()
+        
+        
+//        let isRxFiltering = PublishSubject<Bool>()
+//        isRxFiltering
+//            . subscribe {
+//                if self.searchController.isActive && ((self.searchController.searchBar.text?.isEmpty) != nil) {
+//                    self.isRxFiltering.onNext(true)
+//                } else {
+//                    self.isRxFiltering.onNext(false)
+//                }
+//            }.disposed(by: disposeBag)
+        
     }
     
+    
     //MARK: - Functions
+    
+    private func bindData() {
+        // 테이블뷰 클릭시
+        searchTableView.rx.modelSelected(Book.self)
+            .subscribe(onNext: { [weak self] member in
+                guard let self = self else { return }
+                self.navigationController?.pushViewController(NewDetailViewController(member), animated: true)
+            }).disposed(by: disposeBag)
+    }
+    
+    
     private func setupLayout() {
         view.addsubViews([searchTableView, noLabel])
         searchTableView.snp.makeConstraints {
@@ -89,10 +114,6 @@ class SearchViewController: UIViewController {
                             self.bookList = books.books
                             self.filteredData = self.bookList.filter { $0.title.localizedCaseInsensitiveContains(text)}
                             self.bindTableView(self.filteredData)
-                            
-                            DispatchQueue.main.async {
-                                self.searchTableView.reloadData()
-                            }
                         } catch(let err) {
                             print(err.localizedDescription)
                         }
@@ -106,7 +127,6 @@ class SearchViewController: UIViewController {
     private func bindTableView(_ data: [Book]) {
         self.searchTableView.dataSource = nil
         Observable.of(data)
-        
             .bind(to: self.searchTableView.rx.items(cellIdentifier: "SearchTableCell", cellType: SearchTableCell.self)) { row, element, cell in
                 cell.configureView(with: element)
                 
@@ -121,18 +141,9 @@ class SearchViewController: UIViewController {
                 }
                 cell.searchLinkButton.rx.tap
                     .subscribe(onNext: {
-                        guard let bookUrl = URL(string: "https://itbook.store/books/" + element.isbn13) else { return }
-                        let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl)
-                        self.present(bookSafariView, animated: true, completion: nil)
+                        let safari = Safari()
+                        self.present(safari.safari(data: element), animated: true, completion: nil)
                     }).disposed(by: self.disposeBag)
             }.disposed(by: self.disposeBag)
-    }
-    
-    private func cellClicked() {
-        searchTableView.rx.modelSelected(Book.self)
-            .subscribe(onNext: { [weak self] member in
-                guard let self = self else { return }
-                self.navigationController?.pushViewController(NewDetailViewController(member), animated: true)
-            }).disposed(by: disposeBag)
     }
 }
