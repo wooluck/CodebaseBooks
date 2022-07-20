@@ -51,10 +51,10 @@ class NewViewController: UIViewController {
         
         let refreshLoading = PublishRelay<Bool>()
         refreshControl.rx.controlEvent(.valueChanged)
+            .observe(on: MainScheduler.instance)
             .bind(onNext: {
-                DispatchQueue.main.asyncAfter(wallDeadline: .now() + 1) {
-                    refreshLoading.accept(false)
-                }
+                self.readBooks()
+//                    refreshLoading.accept(false)
             }).disposed(by: disposeBag)
         
         refreshLoading
@@ -87,8 +87,7 @@ class NewViewController: UIViewController {
                 cell.configureView(with: element)
                 cell.newLinkButton.rx.tap
                     .subscribe(onNext: {
-                        let safari = Safari()
-                        self.present(safari.safari(data: element), animated: true, completion: nil)
+                        self.present(SafariView(path: element.isbn13), animated: true, completion: nil)
                     }).disposed(by: self.disposeBag)
             }.disposed(by: disposeBag)
     }

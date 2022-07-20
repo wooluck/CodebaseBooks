@@ -9,14 +9,9 @@ import UIKit
 
 class TabBarController: UITabBarController {
 
-    private lazy var newViewController: UIViewController = {
-        totalTabBar(NewViewController(), title: "New", image: "book", tag: 0)
-    }()
+    private lazy var newViewController = totalTabBar(NewViewController(), title: "New", image: "book", tag: 0)
 
-    private lazy var searchViewController: UIViewController = {
-        
-        totalTabBar(SearchViewController(), title: "Search", image: "magnifyingglass", tag: 1)
-    }()
+    private lazy var searchViewController = totalTabBar(SearchViewController(), title: "Search", image: "magnifyingglass", tag: 1)
 
     override func viewDidLoad() {
         super.viewDidLoad()

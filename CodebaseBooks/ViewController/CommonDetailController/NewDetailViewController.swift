@@ -112,11 +112,7 @@ class NewDetailViewController: UIViewController {
     private func linkButtonClicked(data: Book) {
         detailLinkButton.rx.tap
             .subscribe(onNext: {
-                let isbn13 = data.isbn13 
-//                guard let bookUrl = URL(string: "https://itbook.store/books/" + isbn13 ) else { return }
-//                let bookSafariView: SFSafariViewController = SFSafariViewController(url: bookUrl )
-                let safari = Safari()
-                self.present(safari.safari(data: data), animated: true, completion: nil)
+                self.present(SafariView.init(path: data.isbn13), animated: true, completion: nil)
             }).disposed(by: self.disposeBag)
     }
     

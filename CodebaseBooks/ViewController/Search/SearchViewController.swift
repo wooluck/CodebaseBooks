@@ -142,7 +142,7 @@ class SearchViewController: UIViewController {
                 cell.searchLinkButton.rx.tap
                     .subscribe(onNext: {
                         let safari = Safari()
-                        self.present(safari.safari(data: element), animated: true, completion: nil)
+                        self.present(safari.safari(data: element.isbn13), animated: true, completion: nil)
                     }).disposed(by: self.disposeBag)
             }.disposed(by: self.disposeBag)
     }
