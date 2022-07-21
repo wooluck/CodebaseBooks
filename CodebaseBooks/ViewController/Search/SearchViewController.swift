@@ -55,7 +55,6 @@ class SearchViewController: UIViewController {
     }
     
     //MARK: - Functions
-    
     private func bindData() {
         // 테이블뷰 클릭시
         searchTableView.rx.modelSelected(Book.self)
