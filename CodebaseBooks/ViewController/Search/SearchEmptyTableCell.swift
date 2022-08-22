@@ -1,51 +1,52 @@
 //
-//  NewTableCell.swift
+//  SearchTableCell.swift
 //  CodebaseBooks
 //
-//  Created by pineone on 2022/07/05.
+//  Created by pineone on 2022/07/06.
 //
 
 import UIKit
-import SnapKit
+import Kingfisher
 import Then
 import RxSwift
 import RxCocoa
-import SafariServices
-//import NSOBject_RX
 
-class NewTableCell: UITableViewCell {
-    public lazy var newImageView = UIImageView()
+class SearchEmptyTableCell: UITableViewCell {
     
-    public lazy var newLinkButton = UIButton().then {
+    var preparebook: Book?
+    
+    private var searchImageView = UIImageView()
+    
+    public lazy var searchLinkButton = UIButton().then {
         let config = UIImage.SymbolConfiguration(pointSize: 25)
         $0.setPreferredSymbolConfiguration(config, forImageIn: .normal)
         $0.setImage(UIImage(systemName: "link.circle"), for: .normal)
     }
     
-    public lazy var newView = UIView().then {
+    private lazy var searchView = UIView().then {
         $0.backgroundColor = .systemGray4
     }
     
-    public lazy var newTitleLabel = UILabel().then {
+    private lazy var searchTitleLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 20, weight: .bold)
         $0.textAlignment = .center
     }
     
-    public lazy var newSubTitleLabel = UILabel().then {
+    private lazy var searchSubTitleLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 18, weight: .medium)
         $0.textAlignment = .center
     }
     
-    public lazy var newIsbn13Label = UILabel().then {
+    private lazy var searchIsbn13Label = UILabel().then {
         $0.font = .systemFont(ofSize: 15)
         $0.textAlignment = .center
     }
     
-    public lazy var newPriceLabel = UILabel().then {
+    private lazy var searchPriceLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 16, weight: .bold)
         $0.textAlignment = .center
     }
-    
+    // MARK: - layoutSubviews
     override func layoutSubviews() {
         super.layoutSubviews()
         setupLayoutContentView()
@@ -53,46 +54,45 @@ class NewTableCell: UITableViewCell {
     }
     
     // MARK: - Functions
-
     private func setupLayout() {
-        contentView.addsubViews([newImageView, newLinkButton, newView])
-        newImageView.snp.makeConstraints {
+        
+        contentView.addsubViews([searchImageView, searchLinkButton, searchView])
+        searchImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(105)
             $0.height.equalTo(150)
         }
-        newLinkButton.snp.makeConstraints {
+        searchLinkButton.snp.makeConstraints {
             $0.top.trailing.equalToSuperview().inset(15)
-            $0.leading.equalTo(newImageView.snp.trailing).offset(60)
+            $0.leading.equalTo(searchImageView.snp.trailing).offset(60)
         }
-        newView.snp.makeConstraints{
-            $0.top.equalTo(newImageView.snp.bottom)
+        searchView.snp.makeConstraints{
+            $0.top.equalTo(searchImageView.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
         }
         
-        newView.addsubViews([newTitleLabel, newSubTitleLabel, newIsbn13Label, newPriceLabel])
-        newTitleLabel.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
+        searchView.addsubViews([searchTitleLabel, searchSubTitleLabel, searchIsbn13Label, searchPriceLabel])
+        searchTitleLabel.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(30)
             $0.top.equalToSuperview().inset(10)
         }
-        newSubTitleLabel.snp.makeConstraints {
-            $0.top.equalTo(newTitleLabel.snp.bottom).offset(-5)
+        searchSubTitleLabel.snp.makeConstraints {
+            $0.top.equalTo(searchTitleLabel.snp.bottom).offset(-5)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.bottom.equalTo(newIsbn13Label.snp.top).offset(-5)
+            $0.bottom.equalTo(searchIsbn13Label.snp.top).offset(-5)
         }
-        newIsbn13Label.snp.makeConstraints {
+        searchIsbn13Label.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-            if newSubTitleLabel.text == "" {
-                $0.bottom.equalTo(newPriceLabel.snp.top).offset(-10)
+            if searchSubTitleLabel.text == "" {
+                $0.bottom.equalTo(searchPriceLabel.snp.top).offset(-10)
             } else {
-                $0.bottom.equalTo(newPriceLabel.snp.top).offset(-5)
+                $0.bottom.equalTo(searchPriceLabel.snp.top).offset(-5)
             }
-            
         }
-        newPriceLabel.snp.makeConstraints {
+        searchPriceLabel.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-            if newSubTitleLabel.text == "" {
-                $0.bottom.equalToSuperview().inset(17)
+            if searchSubTitleLabel.text == "" {
+                $0.bottom.equalToSuperview().inset(16)
             } else {
                 $0.bottom.equalToSuperview().inset(7)
             }
@@ -101,29 +101,28 @@ class NewTableCell: UITableViewCell {
     
     /// 테이블 뷰 셀 사이의 간격, 그림자, 셀 둥글게
     private func setupLayoutContentView() {
-        selectionStyle = .none
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0))
-        
-        // cell 자체내에 넣으면 안되고 contentView에 넣어야됨
         contentView.layer.cornerRadius = 30
         contentView.layer.masksToBounds = true
         contentView.backgroundColor = .systemGray5
     }
     
-    /// 데이터 가져오기
-    public func configureView(with bookModel: Book) {
+    /// 가져온 데이터 mapping
+    func configureView(with bookModel: Book) {
         // 이미지 불러오기
         if let url = URL(string: bookModel.image) {
-            newImageView.load(url: url)
+            searchImageView.load(url: url)
             let imageData = try! Data(contentsOf: url)
-            newImageView.image = UIImage(data: imageData)
+            searchImageView.image = UIImage(data: imageData)
         } else {
             print("Image URL Not Failed")
         }
-        newTitleLabel.text = bookModel.title
-        newSubTitleLabel.text = bookModel.subtitle
-        newIsbn13Label.text = bookModel.isbn13
-        newPriceLabel.text = bookModel.price.USDToKRW()
+        
+        searchTitleLabel.text = bookModel.title
+        searchSubTitleLabel.text = bookModel.subtitle
+        searchIsbn13Label.text = bookModel.isbn13
+        searchPriceLabel.text = bookModel.price.USDToKRW()
+        selectionStyle = .none
     }
 }
 

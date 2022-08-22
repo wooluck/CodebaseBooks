@@ -26,17 +26,14 @@ extension APIService: TargetType {
         return url
     }
     
-    
     var path: String {
         switch self {
         case .new:                          return "new"
         case .datail(let isbn13):           return "books/\(isbn13)"
         case .search(let query):            return "search/\(query)"
-        case .fail:                          return "fail"
+        case .fail:                         return "fail"
         }
     }
-    
-    
     
     var method: Moya.Method {
         switch self {
@@ -51,7 +48,7 @@ extension APIService: TargetType {
     
     var task: Task {
         switch self {
-        default:       return .requestPlain
+        default:                            return .requestPlain
         }
     }
     

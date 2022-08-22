@@ -25,6 +25,7 @@ class NewViewController: UIViewController {
         $0.separatorStyle = .none
         $0.register(NewTableCell.self, forCellReuseIdentifier: "NewTableCell")
         $0.rowHeight = 280
+        $0.flashScrollIndicators()
     }
     
     // MARK: - ViewWillAppear()
@@ -46,7 +47,6 @@ class NewViewController: UIViewController {
     // MARK: - Functions
     private func refreshSetting() {
         refreshControl.endRefreshing() // 초기화 - refresh 종료
-//        refreshControl.backgroundColor = UIColor.clear
         newTableView.refreshControl = refreshControl
         
         let refreshLoading = PublishRelay<Bool>()
@@ -106,6 +106,7 @@ class NewViewController: UIViewController {
             $0.top.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(20)
         }
+//        self.newTableView.scrollIndicatorInsets = .zero
     }
     
     private func navigationSet() {
