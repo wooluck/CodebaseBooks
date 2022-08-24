@@ -11,10 +11,12 @@
 		7A38076B28747C2B0031CCFE /* Ex_UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A38076A28747C2B0031CCFE /* Ex_UIView.swift */; };
 		C37B166528766A0F00674314 /* Ex_String.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37B166428766A0F00674314 /* Ex_String.swift */; };
 		C37B16672876B6FC00674314 /* Ex_ConstraintMakerRelatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37B16662876B6FC00674314 /* Ex_ConstraintMakerRelatable.swift */; };
+		C384936B28B61AAC0037E989 /* NewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C384936A28B61AAC0037E989 /* NewView.swift */; };
 		C38DCD8028ABB0A800B0F4A0 /* NewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DCD7F28ABB0A800B0F4A0 /* NewViewModel.swift */; };
 		C38DCD8228ABB0B200B0F4A0 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DCD8128ABB0B200B0F4A0 /* SearchViewModel.swift */; };
 		C38DCD8428ABB18800B0F4A0 /* NewDetailVIewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DCD8328ABB18800B0F4A0 /* NewDetailVIewModel.swift */; };
 		C38DCDB228B35DD800B0F4A0 /* SearchWritingTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DCDB128B35DD800B0F4A0 /* SearchWritingTableCell.swift */; };
+		C38DCDB528B5B71200B0F4A0 /* ViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DCDB428B5B71200B0F4A0 /* ViewModelType.swift */; };
 		C392DC5C2886AAEE00F7B851 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = C392DC5B2886AAEE00F7B851 /* Moya */; };
 		C392DC5F2886AB0500F7B851 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = C392DC5E2886AB0500F7B851 /* Kingfisher */; };
 		C392DC622886AB1D00F7B851 /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = C392DC612886AB1D00F7B851 /* Then */; };
@@ -41,10 +43,12 @@
 		927DA39E4A9FFD20C10F5448 /* Pods-CodebaseBooks.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CodebaseBooks.debug.xcconfig"; path = "Target Support Files/Pods-CodebaseBooks/Pods-CodebaseBooks.debug.xcconfig"; sourceTree = "<group>"; };
 		C37B166428766A0F00674314 /* Ex_String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ex_String.swift; sourceTree = "<group>"; };
 		C37B16662876B6FC00674314 /* Ex_ConstraintMakerRelatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ex_ConstraintMakerRelatable.swift; sourceTree = "<group>"; };
+		C384936A28B61AAC0037E989 /* NewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewView.swift; sourceTree = "<group>"; };
 		C38DCD7F28ABB0A800B0F4A0 /* NewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewViewModel.swift; sourceTree = "<group>"; };
 		C38DCD8128ABB0B200B0F4A0 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		C38DCD8328ABB18800B0F4A0 /* NewDetailVIewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDetailVIewModel.swift; sourceTree = "<group>"; };
 		C38DCDB128B35DD800B0F4A0 /* SearchWritingTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchWritingTableCell.swift; sourceTree = "<group>"; };
+		C38DCDB428B5B71200B0F4A0 /* ViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelType.swift; sourceTree = "<group>"; };
 		C39C4A0928742536000A1221 /* CodebaseBooks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodebaseBooks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C39C4A0C28742536000A1221 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C39C4A0E28742536000A1221 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -126,6 +130,14 @@
 			path = CommonDetailController;
 			sourceTree = "<group>";
 		};
+		C38DCDB328B5B6FE00B0F4A0 /* ViewModelType */ = {
+			isa = PBXGroup;
+			children = (
+				C38DCDB428B5B71200B0F4A0 /* ViewModelType.swift */,
+			);
+			path = ViewModelType;
+			sourceTree = "<group>";
+		};
 		C39C4A0028742536000A1221 = {
 			isa = PBXGroup;
 			children = (
@@ -159,6 +171,7 @@
 		C39C4A20287425CE000A1221 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				C38DCDB328B5B6FE00B0F4A0 /* ViewModelType */,
 				C3CC6AA5287510780045ED8C /* Model */,
 				C3BFD3DA2878150600D23CE1 /* TabBar */,
 				C3894F65288137F800B0DA5A /* CommonDetailController */,
@@ -171,6 +184,7 @@
 		C39C4A21287425DA000A1221 /* New */ = {
 			isa = PBXGroup;
 			children = (
+				C384936A28B61AAC0037E989 /* NewView.swift */,
 				C39C4A25287426B6000A1221 /* NewViewController.swift */,
 				C38DCD7F28ABB0A800B0F4A0 /* NewViewModel.swift */,
 				C39C4A2728742A04000A1221 /* NewTableCell.swift */,
@@ -352,6 +366,7 @@
 				C3BFD3D52877EDEF00D23CE1 /* APIService.swift in Sources */,
 				7A38076B28747C2B0031CCFE /* Ex_UIView.swift in Sources */,
 				C39C4A1128742536000A1221 /* TabBarController.swift in Sources */,
+				C384936B28B61AAC0037E989 /* NewView.swift in Sources */,
 				C3CC6AAF2875488B0045ED8C /* SearchEmptyTableCell.swift in Sources */,
 				C39C4A2828742A04000A1221 /* NewTableCell.swift in Sources */,
 				C37B166528766A0F00674314 /* Ex_String.swift in Sources */,
@@ -369,6 +384,7 @@
 				C39FD6D32887DBD800B5AA88 /* Safari.swift in Sources */,
 				C37B16672876B6FC00674314 /* Ex_ConstraintMakerRelatable.swift in Sources */,
 				C3CC6AAD287529350045ED8C /* BookError.swift in Sources */,
+				C38DCDB528B5B71200B0F4A0 /* ViewModelType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

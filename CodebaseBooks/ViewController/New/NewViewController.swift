@@ -15,18 +15,20 @@ import SafariServices
 
 class NewViewController: UIViewController {
     var disposeBag = DisposeBag()
+    let inputTrigger = PublishRelay<Void>()
+    lazy var newView = NewView()
     
     // make Moya provder
     let service = MoyaProvider<APIService>()
     
     private var refreshControl = UIRefreshControl()
     
-    private lazy var newTableView = UITableView().then {
-        $0.separatorStyle = .none
-        $0.register(NewTableCell.self, forCellReuseIdentifier: "NewTableCell")
-        $0.rowHeight = 280
-        $0.flashScrollIndicators()
-    }
+//    private lazy var newTableView = UITableView().then {
+//        $0.separatorStyle = .none
+//        $0.register(NewTableCell.self, forCellReuseIdentifier: "NewTableCell")
+//        $0.rowHeight = 280
+//        $0.flashScrollIndicators()
+//    }
     
     // MARK: - ViewWillAppear()
     override func viewWillAppear(_ animated: Bool) {
@@ -39,7 +41,7 @@ class NewViewController: UIViewController {
         super.viewDidLoad()
         setupLayout()
         navigationSet()
-        readBooks()
+//        readBooks()
         refreshSetting()
         bindData()
     }
@@ -54,7 +56,7 @@ class NewViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(onNext: {
                 self.newTableView.dataSource = nil
-                self.readBooks()
+//                self.readBooks()
                 refreshLoading.accept(false)
             }).disposed(by: disposeBag)
         
@@ -63,24 +65,24 @@ class NewViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    private func readBooks() {
-        // MoyaProvider를 통해 request를 실행합니다.
-        service.request(APIService.new) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let response):
-                do {
-                    let books = try JSONDecoder().decode(BookModel.self, from: response.data)
-                    self.bindTableView(data: books.books)
-                } catch(let err) {
-                    print("error : \(err)")
-                    self.alertShow()
-                }
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
-    }
+//    private func readBooks() {
+//        // MoyaProvider를 통해 request를 실행합니다.
+//        service.request(APIService.new) { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case .success(let response):
+//                do {
+//                    let books = try JSONDecoder().decode(BookModel.self, from: response.data)
+//                    self.bindTableView(data: books.books)
+//                } catch(let err) {
+//                    print("error : \(err)")
+//                    self.alertShow()
+//                }
+//            case .failure(let error):
+//                print(error.localizedDescription)
+//            }
+//        }
+//    }
     
     private func bindTableView(data: [Book]) {
         Observable.of(data)
