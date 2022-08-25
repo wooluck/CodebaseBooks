@@ -27,6 +27,9 @@ class NewView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayout()
+        bindTableView()
+        refreshSetting()
+//        navigationSet()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -56,4 +59,27 @@ class NewView: UIView {
                 return cell
             }.disposed(by: disposeBag)
     }
+    
+    private func refreshSetting() {
+        refreshControl.endRefreshing() // 초기화 - refresh 종료
+        newTableView.refreshControl = refreshControl
+        
+        let refreshLoading = PublishRelay<Bool>()
+        refreshControl.rx.controlEvent(.valueChanged)
+            .observe(on: MainScheduler.instance)
+            .bind(onNext: {
+                self.newTableView.dataSource = nil
+//                self.readBooks()
+                refreshLoading.accept(false)
+            }).disposed(by: disposeBag)
+        
+        refreshLoading
+            .bind(to: refreshControl.rx.isRefreshing)
+            .disposed(by: disposeBag)
+    }
+    
+//    private func navigationSet() {
+//        navigationItem.title = "New Books"
+//        navigationController?.navigationBar.prefersLargeTitles = true
+//    }
 }

@@ -25,8 +25,8 @@ class NewViewModel: ViewModelType {
     
     func transform(input: Input) -> Output {
         input.inputTrigger
-            .bind(onNext: { _ in
-                self.readBooks()
+            .bind(onNext: { [weak self]_ in
+                self?.readBooks()
             }).disposed(by: disposeBag)
         return Output(newBookRelay: newBookRelay)
     }
@@ -50,6 +50,8 @@ class NewViewModel: ViewModelType {
                         let url = books.url
                         
                         newsBookData.append(Book(title: title, subtitle: subtitle, isbn13: isbn13, price: price, image: image, url: url))
+                        
+                        print("aaaaaaaaaa")
                     }
                     self.newBookRelay.accept(newsBookData)
 
