@@ -45,7 +45,12 @@ class NewView: UIView {
         relay.bind(to: self.dataRelay).disposed(by: disposeBag)
     }
     
-//    func bookListClickDI(
+    /// User Input
+    @discardableResult
+    func setupDI(relay: PublishRelay<NewActionType>) -> Self {
+        action.bind(to: relay).disposed(by: disposeBag)
+        return self
+    }
     
     private func setupLayout() {
         addSubview(newTableView)
@@ -96,10 +101,5 @@ class NewView: UIView {
 //        navigationController?.navigationBar.prefersLargeTitles = true
 //    }
     
-    /// User Input
-    @discardableResult
-    func setupDI(relay: PublishRelay<NewActionType>) -> Self {
-        action.bind(to: relay).disposed(by: disposeBag)
-        return self
-    }
+
 }
