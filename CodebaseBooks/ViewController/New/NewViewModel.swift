@@ -10,25 +10,47 @@ import RxSwift
 import RxCocoa
 import Moya
 
+enum NewActionType {
+    case tt
+    case select(Book)
+}
+
 class NewViewModel: ViewModelType {
     var disposeBag = DisposeBag()
     // make Moya provder
     private let service = MoyaProvider<APIService>()
     private let newBookRelay = BehaviorRelay<[Book]>(value: [])
     
+    private let detailBook = PublishRelay<Book>()
+    
     struct Input {
-        var inputTrigger: PublishRelay<Void>
+        var inputTrigger: PublishRelay<NewActionType>
     }
     struct Output {
         var newBookRelay: BehaviorRelay<[Book]>
+        let navigateToDetail: Observable<Book>
     }
     
     func transform(input: Input) -> Output {
-        input.inputTrigger
-            .bind(onNext: { [weak self]_ in
-                self?.readBooks()
-            }).disposed(by: disposeBag)
-        return Output(newBookRelay: newBookRelay)
+//        input.inputTrigger
+//            .bind(onNext: { [weak self]_ in
+//                self?.readBooks()
+//            }).disposed(by: disposeBag)
+        
+        input.inputTrigger.bind(onNext: actionForButton(_:)).disposed(by: disposeBag)
+        
+        return Output(newBookRelay: newBookRelay,
+                      navigateToDetail: detailBook.asObservable())
+    }
+    
+    private func actionForButton(_ type: NewActionType) {
+        switch type {
+        case .select(let book):
+            detailBook.accept(book)
+        case .tt:
+            readBooks()
+            print("data Load")
+        }
     }
     
     private func readBooks() {
@@ -50,8 +72,6 @@ class NewViewModel: ViewModelType {
                         let url = books.url
                         
                         newsBookData.append(Book(title: title, subtitle: subtitle, isbn13: isbn13, price: price, image: image, url: url))
-                        
-                        print("aaaaaaaaaa")
                     }
                     self.newBookRelay.accept(newsBookData)
 
@@ -65,3 +85,15 @@ class NewViewModel: ViewModelType {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+

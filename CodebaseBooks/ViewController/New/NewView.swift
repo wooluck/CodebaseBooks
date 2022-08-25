@@ -13,10 +13,13 @@ import RxSwift
 class NewView: UIView {
     var disposeBag = DisposeBag()
     let dataRelay = BehaviorRelay<[Book]>(value: [])
+    var bookClickRelay = BehaviorRelay<Bool>(value: false)
+    
+    let action = PublishRelay<NewActionType>()
     
     private var refreshControl = UIRefreshControl()
     
-    private lazy var newTableView = UITableView().then {
+    lazy var newTableView = UITableView().then {
         $0.separatorStyle = .none
         $0.register(NewTableCell.self, forCellReuseIdentifier: "NewTableCell")
         $0.rowHeight = 280
@@ -30,6 +33,7 @@ class NewView: UIView {
         bindTableView()
         refreshSetting()
 //        navigationSet()
+        bindData()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -37,10 +41,11 @@ class NewView: UIView {
     
     
     // MARK: - FUNCTION
-    func setupDI(relay: BehaviorRelay<[Book]>) {
-        relay.bind(to: self.dataRelay)
-            .disposed(by: disposeBag)
+    func bookLoadDI(relay: BehaviorRelay<[Book]>) {
+        relay.bind(to: self.dataRelay).disposed(by: disposeBag)
     }
+    
+//    func bookListClickDI(
     
     private func setupLayout() {
         addSubview(newTableView)
@@ -78,8 +83,23 @@ class NewView: UIView {
             .disposed(by: disposeBag)
     }
     
+    func bindData() {
+        newTableView.rx.modelSelected(Book.self)
+            .subscribe(onNext: { [weak self] member in
+                guard let self = self else { return }
+                self.action.accept(.select(member))
+            }).disposed(by: self.disposeBag)
+    }
+    
 //    private func navigationSet() {
 //        navigationItem.title = "New Books"
 //        navigationController?.navigationBar.prefersLargeTitles = true
 //    }
+    
+    /// User Input
+    @discardableResult
+    func setupDI(relay: PublishRelay<NewActionType>) -> Self {
+        action.bind(to: relay).disposed(by: disposeBag)
+        return self
+    }
 }
