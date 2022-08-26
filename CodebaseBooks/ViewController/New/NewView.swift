@@ -13,6 +13,7 @@ import RxSwift
 class NewView: UIView {
     var disposeBag = DisposeBag()
     let dataRelay = BehaviorRelay<[Book]>(value: [])
+    let dataRelay2 = BehaviorRelay<BookModel>(value: BookModel(error: "", total: "", page: "", books: []))
     var bookClickRelay = BehaviorRelay<Bool>(value: false)
     
     let action = PublishRelay<NewActionType>()
@@ -44,7 +45,7 @@ class NewView: UIView {
     func bookLoadDI(relay: BehaviorRelay<[Book]>) {
         relay.bind(to: self.dataRelay).disposed(by: disposeBag)
     }
-    
+
     /// User Input
     @discardableResult
     func setupDI(relay: PublishRelay<NewActionType>) -> Self {
@@ -64,6 +65,8 @@ class NewView: UIView {
     private func bindTableView() {
         dataRelay.asDriver(onErrorJustReturn: [])
             .drive(newTableView.rx.items) { table, row, item in
+                
+                print("@@@@@@@@@@@@@@@@@@@@@@@ \(row)")
                 guard let cell = table.dequeueReusableCell(withIdentifier: "NewTableCell") as? NewTableCell else { return UITableViewCell() }
                 cell.configureView(with: item)
                 return cell
@@ -78,7 +81,7 @@ class NewView: UIView {
         refreshControl.rx.controlEvent(.valueChanged)
             .observe(on: MainScheduler.instance)
             .bind(onNext: {
-                self.newTableView.dataSource = nil
+//                self.newTableView.dataSource = nil
 //                self.readBooks()
                 refreshLoading.accept(false)
             }).disposed(by: disposeBag)
@@ -95,11 +98,4 @@ class NewView: UIView {
                 self.action.accept(.select(member))
             }).disposed(by: self.disposeBag)
     }
-    
-//    private func navigationSet() {
-//        navigationItem.title = "New Books"
-//        navigationController?.navigationBar.prefersLargeTitles = true
-//    }
-    
-
 }
