@@ -12,7 +12,7 @@ import RxSwift
 import RxCocoa
 
 class SearchEmptyTableCell: UITableViewCell {
-    
+    static let id = "SearchEmptyTableCell"
     var preparebook: Book?
     
     private var searchImageView = UIImageView()
@@ -77,9 +77,9 @@ class SearchEmptyTableCell: UITableViewCell {
             $0.top.equalToSuperview().inset(10)
         }
         searchSubTitleLabel.snp.makeConstraints {
-            $0.top.equalTo(searchTitleLabel.snp.bottom).offset(-5)
+            $0.top.equalTo(searchTitleLabel.snp.bottom).offset(3)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.bottom.equalTo(searchIsbn13Label.snp.top).offset(-5)
+//            $0.bottom.equalTo(searchIsbn13Label.snp.top).offset(-5)
         }
         searchIsbn13Label.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
@@ -92,7 +92,7 @@ class SearchEmptyTableCell: UITableViewCell {
         searchPriceLabel.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
             if searchSubTitleLabel.text == "" {
-                $0.bottom.equalToSuperview().inset(16)
+                $0.bottom.equalToSuperview().inset(17)
             } else {
                 $0.bottom.equalToSuperview().inset(7)
             }

@@ -6,3 +6,12 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
+
+enum NewDetailActionType {
+    case normal
+    case select(Book)
+}
+
+

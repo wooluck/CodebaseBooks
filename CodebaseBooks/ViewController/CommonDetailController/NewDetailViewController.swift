@@ -16,7 +16,7 @@ import SafariServices
 class NewDetailViewController: UIViewController {
     var disposeBag = DisposeBag()
     let service = MoyaProvider<APIService>()
-    private let DATA_KEY = "Saved Data"
+
     private var textData: String?
     let defaults = UserDefaults.standard
     
@@ -74,7 +74,7 @@ class NewDetailViewController: UIViewController {
     // MARK: - viewWillAppear()
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        detailTextView.text = defaults.string(forKey: "textData")
+
     }
     
     // MARK: - ViewDidLoad()
@@ -82,14 +82,7 @@ class NewDetailViewController: UIViewController {
         super.viewDidLoad()
         setupLayout()
         setLayoutContentView()
-        
-        // MARK: (Test)
-        detailTextView.rx.didChange
-            .subscribe(onNext : {
-                self.textData = self.detailTextView.text ?? "no Data in textData"
-                self.defaults.set(self.textData, forKey: "textData")
-            }).disposed(by: disposeBag)
-        
+   
     }
     
     // MARK: - Functions

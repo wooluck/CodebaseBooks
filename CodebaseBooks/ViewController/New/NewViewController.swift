@@ -54,15 +54,16 @@ class NewViewController: UIViewController {
     // ViewModel에서 받아온 데이터 View로 넘겨줄게 ~
     private func bindData() {
         let request = newViewModel.transform(input: NewViewModel.Input.init(inputTrigger: inputTrigger))
+        
+        inputTrigger.accept(.normal)
+        
         newView.bookLoadDI(relay: request.newBookRelay)
         
-        inputTrigger.accept(.tt)
-        
-        newView
-            .setupDI(relay: inputTrigger)
+        newView.setupDI(relay: inputTrigger)
             
         // MARK: ROUTE
         self.routeDI(observable: request.navigateToDetail)
+        
     }
     
     @discardableResult
@@ -76,6 +77,7 @@ class NewViewController: UIViewController {
         }
         return self
     }
+    
     
     //    private func bindTableView(data: [Book]) {
     //        Observable.of(data)

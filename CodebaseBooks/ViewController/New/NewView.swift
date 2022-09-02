@@ -13,8 +13,7 @@ import RxSwift
 class NewView: UIView {
     var disposeBag = DisposeBag()
     let dataRelay = BehaviorRelay<[Book]>(value: [])
-    let dataRelay2 = BehaviorRelay<BookModel>(value: BookModel(error: "", total: "", page: "", books: []))
-    var bookClickRelay = BehaviorRelay<Bool>(value: false)
+    let refreshLoading = PublishRelay<Bool>()
     
     let action = PublishRelay<NewActionType>()
     
@@ -42,8 +41,10 @@ class NewView: UIView {
     
     
     // MARK: - FUNCTION
+    // ViewController에서 Book 데이터를 받아와
     func bookLoadDI(relay: BehaviorRelay<[Book]>) {
-        relay.bind(to: self.dataRelay).disposed(by: disposeBag)
+        relay.bind(to: self.dataRelay)
+            .disposed(by: disposeBag)
     }
 
     /// User Input
@@ -52,6 +53,12 @@ class NewView: UIView {
         action.bind(to: relay).disposed(by: disposeBag)
         return self
     }
+    
+//    @discardableResult
+//    func setupSafafiDI(relay: PublishRelay<NewActionType>) -> Self {
+//        action.bind(to: relay).disposed(by: disposeBag)
+//        return self
+//    }
     
     private func setupLayout() {
         addSubview(newTableView)
@@ -65,30 +72,10 @@ class NewView: UIView {
     private func bindTableView() {
         dataRelay.asDriver(onErrorJustReturn: [])
             .drive(newTableView.rx.items) { table, row, item in
-                
-                print("@@@@@@@@@@@@@@@@@@@@@@@ \(row)")
                 guard let cell = table.dequeueReusableCell(withIdentifier: "NewTableCell") as? NewTableCell else { return UITableViewCell() }
                 cell.configureView(with: item)
                 return cell
             }.disposed(by: disposeBag)
-    }
-    
-    private func refreshSetting() {
-        refreshControl.endRefreshing() // 초기화 - refresh 종료
-        newTableView.refreshControl = refreshControl
-        
-        let refreshLoading = PublishRelay<Bool>()
-        refreshControl.rx.controlEvent(.valueChanged)
-            .observe(on: MainScheduler.instance)
-            .bind(onNext: {
-//                self.newTableView.dataSource = nil
-//                self.readBooks()
-                refreshLoading.accept(false)
-            }).disposed(by: disposeBag)
-        
-        refreshLoading
-            .bind(to: refreshControl.rx.isRefreshing)
-            .disposed(by: disposeBag)
     }
     
     func bindData() {
@@ -98,4 +85,29 @@ class NewView: UIView {
                 self.action.accept(.select(member))
             }).disposed(by: self.disposeBag)
     }
+    
+    private func refreshSetting() {
+//        refreshControl.endRefreshing() // 초기화 - refresh 종료
+        newTableView.refreshControl = refreshControl
+        
+        
+        refreshControl.rx.controlEvent(.valueChanged)
+            .observe(on: MainScheduler.instance)
+            .bind(onNext: {
+                self.refreshLoading.accept(false)
+            }).disposed(by: disposeBag)
+        
+        refreshLoading
+            .bind(to: refreshControl.rx.isRefreshing)
+            .disposed(by: disposeBag)
+    }
+    
+//    func bindSafariData() {
+//        let newTableCell = NewTableCell()
+//        newTableCell.newLinkButton.rx.tap
+//            .subscribe(onNext: { [weak self]
+//                guard let self = self else { return }
+//                self.action.accept(.refresh(<#T##Book#>))
+//            })
+//    }
 }

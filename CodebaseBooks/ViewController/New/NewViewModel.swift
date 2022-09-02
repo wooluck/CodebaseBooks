@@ -11,17 +11,19 @@ import RxCocoa
 import Moya
 
 enum NewActionType {
-    case tt
+    case normal
     case select(Book)
+//    case refresh(Book)
 }
 
 class NewViewModel: ViewModelType {
     var disposeBag = DisposeBag()
-    // make Moya provder
+    // make Moya provider
     private let service = MoyaProvider<APIService>()
-    private let newBookRelay = BehaviorRelay<[Book]>(value: [])
     
+    private let newBookRelay = BehaviorRelay<[Book]>(value: [])
     private let detailBook = PublishRelay<Book>()
+    private let enterSafafi = PublishRelay<Book>()
     
     struct Input {
         var inputTrigger: PublishRelay<NewActionType>
@@ -29,14 +31,10 @@ class NewViewModel: ViewModelType {
     struct Output {
         var newBookRelay: BehaviorRelay<[Book]>
         let navigateToDetail: Observable<Book>
+//        var linkButtonClicked: Observable<Book>
     }
     
     func transform(input: Input) -> Output {
-        //        input.inputTrigger
-        //            .bind(onNext: { [weak self]_ in
-        //                self?.readBooks()
-        //            }).disposed(by: disposeBag)
-        
         input.inputTrigger.bind(onNext: actionForButton(_:)).disposed(by: disposeBag)
         
         return Output(newBookRelay: newBookRelay,
@@ -47,9 +45,10 @@ class NewViewModel: ViewModelType {
         switch type {
         case .select(let book):
             detailBook.accept(book)
-        case .tt:
+        case .normal:
             readBooks()
-            print("data Load")
+//        case .refresh:
+//            print("reFresh")
         }
     }
     
@@ -66,8 +65,8 @@ class NewViewModel: ViewModelType {
                     
                     self.newBookRelay.accept(newsBookData)
                     
-                } catch let err {
-                    print("error : \(err)")
+                } catch  {
+                    print(NewMessage.Error.APIFailerMessage)
                     //                    self.alertShow()
                 }
             case .failure:

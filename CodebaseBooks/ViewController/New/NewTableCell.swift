@@ -14,6 +14,7 @@ import SafariServices
 //import NSOBject_RX
 
 class NewTableCell: UITableViewCell {
+    
     public lazy var newImageView = UIImageView()
     
     public lazy var newLinkButton = UIButton().then {
@@ -78,29 +79,22 @@ class NewTableCell: UITableViewCell {
         newSubTitleLabel.snp.makeConstraints {
             $0.top.equalTo(newTitleLabel.snp.bottom).offset(3)
             $0.leading.trailing.equalToSuperview().inset(20)
-//            $0.centerX.equalToSuperview()
-//            $0.bottom.equalTo(newIsbn13Label.snp.top).offset(-5)
         }
         newIsbn13Label.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-//            if newSubTitleLabel.text == "" {
-//                $0.bottom.equalTo(newPriceLabel.snp.top).offset(-10)
-//            } else {
-//                $0.bottom.equalTo(newPriceLabel.snp.top).offset(-5)
-//            }
-            $0.top.equalTo(newSubTitleLabel.snp.bottom).offset(4)
-            $0.leading.trailing.equalToSuperview().inset(20)
-            
+            if newSubTitleLabel.text == "" {
+                $0.bottom.equalTo(newPriceLabel.snp.top).offset(-10)
+            } else {
+                $0.bottom.equalTo(newPriceLabel.snp.top).offset(-5)
+            }
         }
         newPriceLabel.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-//            if newSubTitleLabel.text == "" {
-//                $0.bottom.equalToSuperview().inset(17)
-//            } else {
-//                $0.bottom.equalToSuperview().inset(7)
-//            }
-            $0.top.equalTo(newIsbn13Label.snp.bottom).offset(4)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            if newSubTitleLabel.text == "" {
+                $0.bottom.equalToSuperview().inset(17)
+            } else {
+                $0.bottom.equalToSuperview().inset(7)
+            }
         }
     }
     
