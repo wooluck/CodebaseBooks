@@ -12,21 +12,28 @@ import RxSwift
 import RxCocoa
 import SafariServices
 
-class SearchViewController: UIViewController {
+class SearchViewController: UIViewController, UITableViewDelegate {
     var disposeBag = DisposeBag()
     var bookList = [Book]()
-    var filteredData = BehaviorRelay<[Book]>(value: [])
     let searchController = UISearchController(searchResultsController: nil)
     let service = MoyaProvider<APIService>()
-    
     let searchViewModel = SearchViewModel()
+    // input
     let inputTrigger = PublishRelay<SearchActionType>()
+    // output
     var searchBookList = BehaviorRelay<[Book]>(value: [])
+    var searchFilterBookList = BehaviorRelay<[Book]>(value: [])
     
     
     private lazy var searchTableView = UITableView().then {
         $0.register(SearchEmptyTableCell.self, forCellReuseIdentifier: SearchEmptyTableCell.id)
+        //        $0.register(SearchWritingTableCell.self, forCellReuseIdentifier: "SearchWritingTableCell")
+        $0.rowHeight = 280
+    }
+    private lazy var searchFilterTableView = UITableView().then {
+        //        $0.register(SearchEmptyTableCell.self, forCellReuseIdentifier: SearchEmptyTableCell.id)
         $0.register(SearchWritingTableCell.self, forCellReuseIdentifier: "SearchWritingTableCell")
+        $0.rowHeight = 150
     }
     
     private lazy var noLabel = UILabel().then {
@@ -46,85 +53,51 @@ class SearchViewController: UIViewController {
         navigationSearch()
         tableSelected()
         setupLayout()
-        bindData()
         bindingViewModel()
-        
     }
-    
     
     //MARK: - Functions
     private func bindingViewModel() {
-        let request = searchViewModel.transform(input: SearchViewModel.Input.init(inputTrigger: inputTrigger.asObservable()))
-        request.searchBookList.subscribe(onNext: { text in
-            print("request = \(text)")
-        }).disposed(by: disposeBag)
+        let request = searchViewModel.transform(input: SearchViewModel.Input.init(inputTrigger: inputTrigger))
         
-        self//.setupDI(relay: inputTrigger)
-            .setupDI(observable: request.searchBookList)
-    }
-    
-    private func bindData() {
+        inputTrigger.accept(.first)
+        
+        request.searchBookList
+            .bind(to: self.searchBookList)
+            .disposed(by: disposeBag)
+        
+//        self.searchBookList
+//            .bind(to: searchTableView.rx.items(cellIdentifier: SearchEmptyTableCell.id, cellType: SearchEmptyTableCell.self)) { row, element, cell in
+//                cell.configureView(with: element)
+//                cell.searchLinkButton.rx.tap
+//                    .subscribe(onNext: {
+//                        let safari = Safari()
+//                        self.present(safari.safari(data: element.isbn13), animated: true, completion: nil)
+//                    }).disposed(by: self.disposeBag)
+//            }.disposed(by: disposeBag)
+//
+        
         searchController.searchBar.rx.text
             .subscribe(onNext: { [weak self] in
                 guard let `self` = self else { return }
-                self.inputTrigger.accept(.normal($0 ?? ""))
-            }).disposed(by: disposeBag)
-        
-//        let text = searchController.searchBar.rx.text
-//            .map { value in
-//
-//                .normal("") }
-//            .bind(to: inputTrigger)
-    }
-    
-    
-    @discardableResult
-    func setupDI(relay: PublishRelay<SearchActionType>) -> Self {
-        inputTrigger.bind(to: relay).disposed(by: disposeBag)
-        return self
-    }
-    
-    @discardableResult
-    func setupDI(observable: Observable<[Book]>) -> Self {
-        observable
-            .bind(to: searchTableView.rx.items(cellIdentifier: SearchEmptyTableCell.id, cellType: SearchEmptyTableCell.self)) { row, element, cell in
-                cell.configureView(with: element)
-            }.disposed(by: disposeBag)
-        return self
-    }
-    
-    
-    
-    
-    
-    
-    private func bindEmptyTableView(_ data: BehaviorRelay<[Book]>) {
-        data
-            .asDriver(onErrorJustReturn: [])
-            .drive(self.searchTableView.rx.items(cellIdentifier: SearchEmptyTableCell.id, cellType: SearchEmptyTableCell.self)) { row, element, cell in
-                print("오지도않음2222 ")
-                cell.configureView(with: element)
-                //                cell.searchLinkButton.rx.tap
-                //                    .subscribe(onNext: {
-                //                        let safari = Safari()
-                //                        self.present(safari.safari(data: element.isbn13), animated: true, completion: nil)
-                //                    }).disposed(by: self.disposeBag)
-            }.disposed(by: self.disposeBag)
-        
-    }
-    
-    private func bindTableView(_ data: [Book]) {
-        self.searchTableView.dataSource = nil
-        Observable.of(data)
-            .bind(to: self.searchTableView.rx.items(cellIdentifier: "SearchWritingTableCell", cellType: SearchWritingTableCell.self)) { row, element, cell in
-                cell.configureView(with: element)
+                self.inputTrigger.accept(.searchBarClick($0 ?? ""))
                 
-                cell.searchLinkButton.rx.tap
-                    .subscribe(onNext: {
-                        let safari = Safari()
-                        self.present(safari.safari(data: element.isbn13), animated: true, completion: nil)
-                    }).disposed(by: self.disposeBag)
-            }.disposed(by: self.disposeBag)
+                // 기존 테이블 없애고, 그럼 바인드 되잇으니까 데이터 사라지고
+//                self.searchBookList = BehaviorRelay<[Book]>(value: [])
+//                self.searchBookList.accept([])
+                
+                request.searchFilterBookList
+                    .bind(to: self.searchFilterBookList)
+                    .disposed(by: self.disposeBag)
+                
+                self.searchFilterTableView.delegate = nil
+
+                self.searchFilterBookList
+                    .bind(to: self.searchFilterTableView.rx.items(cellIdentifier: "SearchWritingTableCell", cellType: SearchWritingTableCell.self)) { row, element, cell in
+                        cell.configureView(with: element)
+
+                    }.disposed(by: self.disposeBag)
+            }).disposed(by: disposeBag)
     }
     
     
@@ -140,16 +113,23 @@ class SearchViewController: UIViewController {
     
     
     private func setupLayout() {
-        view.addsubViews([searchTableView, noLabel])
-        searchTableView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.bottom.equalToSuperview()
-            //            if self.filteredData.count == 0 {
-            //                $0.leading.trailing.equalToSuperview().inset(20)
-            //            } else {
-            //                $0.leading.trailing.equalToSuperview()
-            //            }
-        }
+        view.addsubViews([searchTableView, searchFilterTableView, noLabel])
+        searchBookList.subscribe(onNext: { text in
+            if text.count != 0 {
+                self.searchTableView.snp.makeConstraints {
+                    $0.top.equalTo(self.view.safeAreaLayoutGuide)
+                    $0.bottom.equalToSuperview()
+                    $0.leading.trailing.equalToSuperview().inset(20)
+                }
+            } else if text.count == 0 {
+                self.searchFilterTableView.snp.makeConstraints {
+                    $0.top.equalTo(self.view.safeAreaLayoutGuide)
+                    $0.bottom.equalToSuperview()
+                    $0.leading.trailing.equalToSuperview().inset(20)
+                }
+            }
+        }).disposed(by: self.disposeBag)
+        
         noLabel.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
         }

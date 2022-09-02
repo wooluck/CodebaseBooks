@@ -19,7 +19,8 @@ import Moya
  */
 
 enum SearchActionType {
-    case normal(String)
+    case first
+    case searchBarClick(String)
 }
 
 class SearchViewModel: ViewModelType {
@@ -28,15 +29,15 @@ class SearchViewModel: ViewModelType {
     private let service = MoyaProvider<APIService>()
     
     struct Input {
-        var inputTrigger: Observable<SearchActionType>
+        var inputTrigger: PublishRelay<SearchActionType>
     }
     
     struct Output {
-        var searchBookList: Observable<[Book]>
-        var searchFilterBookList: Observable<[Book]>
+        var searchBookList: BehaviorRelay<[Book]>
+        var searchFilterBookList: BehaviorRelay<[Book]>
     }
     
-    private var searchBookList = PublishRelay<[Book]>()
+    private var searchBookList = BehaviorRelay<[Book]>(value: [])
     private let searchFilterBookList = BehaviorRelay<[Book]>(value: [])
     
     func transform(input: Input) -> Output {
@@ -45,28 +46,30 @@ class SearchViewModel: ViewModelType {
             .bind(onNext: inputActionTrigger(_:))
             .disposed(by: disposeBag)
         
-        return Output(searchBookList: searchBookList.asObservable(),
-                      searchFilterBookList: searchFilterBookList.asObservable()
+        return Output(searchBookList: searchBookList,
+                      searchFilterBookList: searchFilterBookList
         )
     }
     
     private func inputActionTrigger(_ type: SearchActionType) {
         switch type {
-        case .normal(let text):
-            print("3")
+        case .first:
+            firstScene()
+        case .searchBarClick(let text):
             writeInSeachBar(text)
         }
     }
     
-    private func writeInSeachBar(_ text: String) {
-        if text == "" {
+    private func firstScene() {
         self.service.request(APIService.new) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let response):
                 do {
                     let books = try JSONDecoder().decode(BookModel.self, from: response.data)
-                    self.searchBookList.accept(books.books)
+                    
+                    self.searchBookList
+                        .accept(books.books)
                     
                 } catch {
                     print(NewMessage.Error.APIFailerMessage)
@@ -76,6 +79,41 @@ class SearchViewModel: ViewModelType {
             }
         }
     }
+    
+    private func writeInSeachBar(_ text: String) {
+        if text == "" {
+            self.service.request(APIService.new) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let response):
+                    do {
+                        let books = try JSONDecoder().decode(BookModel.self, from: response.data)
+                        self.searchFilterBookList.accept(books.books)
+                        
+                    } catch {
+                        print(NewMessage.Error.APIFailerMessage)
+                    }
+                case .failure:
+                    print(NewMessage.Error.APIFailerMessage)
+                }
+            }
+        } else {
+            self.service.request(APIService.search(query: text)) { [weak self] result in
+                guard let `self` = self else { return }
+                switch result {
+                case .success(let response):
+                    do {
+                        let books = try JSONDecoder().decode(BookModel.self, from: response.data)
+                        self.searchFilterBookList.accept(books.books)
+                    } catch {
+                        print(NewMessage.Error.APIFailerMessage)
+                    }
+                case .failure:
+                    print(NewMessage.Error.APIFailerMessage)
+                }
+            }
+            
+        }
     }
 }
 
