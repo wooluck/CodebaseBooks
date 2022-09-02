@@ -59,6 +59,7 @@ class SearchViewModel: ViewModelType {
     }
     
     private func writeInSeachBar(_ text: String) {
+        if text == "" {
         self.service.request(APIService.new) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -74,6 +75,7 @@ class SearchViewModel: ViewModelType {
                 print(NewMessage.Error.APIFailerMessage)
             }
         }
+    }
     }
 }
 

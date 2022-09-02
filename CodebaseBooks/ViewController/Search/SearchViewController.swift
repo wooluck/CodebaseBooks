@@ -55,7 +55,9 @@ class SearchViewController: UIViewController {
     //MARK: - Functions
     private func bindingViewModel() {
         let request = searchViewModel.transform(input: SearchViewModel.Input.init(inputTrigger: inputTrigger.asObservable()))
-        
+        request.searchBookList.subscribe(onNext: { text in
+            print("request = \(text)")
+        }).disposed(by: disposeBag)
         
         self//.setupDI(relay: inputTrigger)
             .setupDI(observable: request.searchBookList)
@@ -66,7 +68,6 @@ class SearchViewController: UIViewController {
             .subscribe(onNext: { [weak self] in
                 guard let `self` = self else { return }
                 self.inputTrigger.accept(.normal($0 ?? ""))
-                
             }).disposed(by: disposeBag)
         
 //        let text = searchController.searchBar.rx.text
